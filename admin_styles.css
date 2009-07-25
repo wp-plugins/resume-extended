@@ -1,0 +1,123 @@
+
+/**
+ * Normal sized dark text
+ * used to denote Labels and form content
+ */
+.form_label,
+.inline_label_active,
+.form_text,
+.form_date,
+.part_title,
+.form_textarea {
+	font-size: 14.686px;
+	color: #333;
+}
+
+/**
+ * Normal sized light text
+ * used to denote inline lables
+ */
+
+.inline_label_inactive {
+	font-size: 14.686px;
+	color: #999;
+}
+
+/**
+ * Small sized light text
+ * used to denote tips and hints
+ */
+
+.form_label .desc,
+.part_desc {
+	font-size: 13px;
+	color: #727272;
+}
+
+p.desc {
+	margin: -3px 0 0 0 ;
+}
+
+/*
+ * Title text
+ */
+#resume_title {
+	font-size: 24px;
+	width: 520px;
+}
+
+/*
+ * Objective text
+ */
+#resume_objective {
+	height: 3.5em;
+}
+
+/*
+ * make the labels span
+ */
+.form_label {
+	width: 100%;
+	margin-bottom: 5px;
+	display: block;
+}
+
+/*
+ * leading on control box
+ */
+.control_box{
+	margin: 10px 0;
+}
+
+/*
+ * remove lable
+ */
+.inline_label {
+	display: none;
+}
+
+.form_text.one_third,
+.form_date.one_third {
+	width: 97px;
+	margin-right:3px;
+	margin-left: 0;
+}
+
+.form_text.two_thirds,
+.form_date.two_thirds {
+	width: 197px;
+	margin-right:3px;
+	margin-left: 0;
+}
+
+.form_text,
+#resume_address {
+	width: 300px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+.form_date {
+	width: 200px;
+}
+
+#contact_info {
+	width: 330px;
+}
+
+.form_textarea {
+	width: 520px;
+}
+
+.resume_wrap {
+	width: 560px;
+}
+
+input:disabled {
+	background-image: url('images/cross_hatch.png');
+	color: #dfdfdf;
+}
+
+.ui-widget-header {
+	font-size: .68em !important;
+}

@@ -1,0 +1,11 @@
+BEGIN:VCARD   
+VERSION:2.1
+FN:Corky Crystal
+TITLE:Computer Officer Class 3
+ROLE:Programmer
+ADR;WORK:; 111 Lake Drive ; WonderCity ; 5555 ; Australia
+LABEL;WORK;ENCODING=QUOTED-PRINTABLE: 111 Lake Drive =0D=0A WonderCity =0D=0A 5555  Australia
+EMAIL;PREF;INTERNET:corky@qqq.com
+NOTE:Only works on Mondays and Fridays
+TEL;WORK;VOICE:+61 7 555 5555
+END:VCARD

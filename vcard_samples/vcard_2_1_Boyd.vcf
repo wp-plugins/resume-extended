@@ -1,0 +1,15 @@
+BEGIN:VCARD
+VERSION:2.1
+N:Boyd;J.;David
+FN:J. David Boyd
+ORG:Transportation Systems Consulting Corporation
+TITLE:Software Engineer
+TEL;WORK;VOICE:(727) 785-0583
+TEL;WORK;FAX:(727) 789-1143
+ADR;WORK;ENCODING=QUOTED-PRINTABLE:;;2710 U.S. Alt. 19 North=0D=0ASuite 401;Palm Harbor;FL;34683;USA
+LABEL;WORK;ENCODING=QUOTED-PRINTABLE:2710 U.S. Alt. 19 North=0D=0ASuite 401=0D=0APalm Harbor, FL 34683=0D=0AUSA
+URL:http://www.tsc-corp.com
+EMAIL;PREF;INTERNET:dave@xxxxxxxxxxxx
+REV:20010716T150922Z
+END:VCARD
+
