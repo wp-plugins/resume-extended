@@ -31,7 +31,22 @@ Author URI: http://sachimp.com/
 $resume_path = WP_CONTENT_URL.'/plugins/'.plugin_basename(dirname(__FILE__)).'/';
 $resume_ajax = get_bloginfo('wpurl') . "/wp-admin/admin-ajax.php";
 
-$resume_pages = Array(
+include_once('sections/resume-ext-general.php');
+//include_once('sections/resume-ext-skills.php');
+//include_once('sections/resume-ext-employment.php');
+//include_once('sections/resume-ext-education.php');
+//include_once('sections/resume-ext-awards.php');
+//include_once('sections/resume-ext-finish.php');
+
+$resume_sections = Array(
+	new resume_ext_general(),
+//	new resume_ext_skills(),
+//	new resume_ext_employment(),
+//	new resume_ext_education(),
+//	new resume_ext_awards(),
+//	new resume_ext_finish()
+);
+/*$resume_pages = Array(
 	'general' => "form_resume_general.php",
 	'skills' => "form_resume_skills.php",
 	'employment' => "form_resume_employment.php",
@@ -88,7 +103,7 @@ function resume_end_form($next, $middle, $prev = NULL) {
 	</form>
 
 	</div>
-<? }
+<? }*/
 
 add_filter('admin_menu', 'resume_menu');
 add_action('admin_print_styles', 'resume_admin_styles');
@@ -131,7 +146,7 @@ function resume_options() { ?>
 <? }
 
 function resume_new_page() {
-	global $resume_pages;
+/*	global $resume_pages;
 	global $resume_titles;
 	global $resume_ajax;
 
@@ -161,13 +176,13 @@ function resume_new_page() {
 	</div>
 	</div>
 <?
-}
+*/}
 
 add_action('wp_ajax_resume_new', 'resume_new');
 add_action('wp_ajax_resume_finalize', 'resume_finalize');
 add_action('wp_ajax_resume_reset', 'resume_reset');
 
-
+/*
 $resume_filters = Array(
 	'general' => Array(
 		'resume_title' => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -235,9 +250,9 @@ function resume_format_dl($items_array, $sub_action) {
 function resume_format_dl_item($strong, $title, $desc) {
 	return "<dt class=\"part_title\"> " . (($strong)? "<strong>" . $strong . "</strong> ": "") . $title . "</dt>"
 		. "<dd class=\"part_desc\">" . $desc . "</dd>";
-}
+}*/
 
-function resume_new() {
+function resume_new() {/*
 	global $resume_filters;
 
 	session_start();
@@ -250,10 +265,10 @@ function resume_new() {
 		$_SESSION['resume'][$sub_action][] = filter_input_array(INPUT_POST, $resume_filters[$sub_action]);
 	}
 
-	die(resume_format_dl($_SESSION['resume'][$sub_action], $sub_action));
+	die(resume_format_dl($_SESSION['resume'][$sub_action], $sub_action));*/
 }
 
-function resume_finalize() {
+function resume_finalize() {/*
 	global $wpdb;
 	global $user_ID;
 
@@ -298,7 +313,7 @@ SQL;
 
 	unset($_SESSION['resume']);
 
-	die("");
+	die("");*/
 }
 
 function resume_reset() {
