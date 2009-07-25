@@ -17,7 +17,7 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
-Plugin Name: Resume
+Plugin Name: Resume Extended
 Plugin URI: http://sachimp/
 Description: Create and manage your Resume all from your blog.
 Version: 0.1
@@ -97,9 +97,6 @@ add_action('admin_print_scripts', 'resume_admin_scripts');
 function resume_admin_styles () {
 	global $resume_path;
 	wp_enqueue_style('resume_admin_css', $resume_path . "admin_styles.css");
-	//wp_enqueue_style('resume_ui_lightness', $resume_path . "css/dot-luv/jquery-ui-1.7.2.custom.css");
-	//wp_enqueue_style('resume_ui_lightness', $resume_path . "css/ui-lightness/jquery-ui-1.7.2.custom.css");
-	//wp_enqueue_style('resume_ui_lightness', $resume_path . "css/dark-hive/jquery-ui-1.7.2.custom.css");
 	wp_enqueue_style('resume_ui_smoothness', $resume_path . "css/smoothness/jquery-ui-1.7.2.custom.css");
 }
 
@@ -124,7 +121,7 @@ function resume_menu()  {
 	add_menu_page('New Resume', 'Resume', 8, __FILE__, 'resume_new_page');
 	add_submenu_page(__FILE__, 'New Resume', 'New Resume', 8, __FILE__, 'resume_new_page');
 
-	add_options_page('Resume Options', 'Resume', 8, 'resumeoptions', 'resume_options');
+	//add_options_page('Resume Options', 'Resume', 8, 'resumeoptions', 'resume_options');
 }
 
 function resume_options() { ?>
