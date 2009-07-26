@@ -32,19 +32,19 @@ $resume_path = WP_CONTENT_URL.'/plugins/'.plugin_basename(dirname(__FILE__)).'/'
 $resume_ajax = get_bloginfo('wpurl') . "/wp-admin/admin-ajax.php";
 
 include_once('sections/resume-ext-general.php');
-//include_once('sections/resume-ext-skills.php');
-//include_once('sections/resume-ext-employment.php');
-//include_once('sections/resume-ext-education.php');
-//include_once('sections/resume-ext-awards.php');
-//include_once('sections/resume-ext-finish.php');
+include_once('sections/resume-ext-skills.php');
+include_once('sections/resume-ext-employment.php');
+include_once('sections/resume-ext-education.php');
+include_once('sections/resume-ext-awards.php');
+include_once('sections/resume-ext-finish.php');
 
 $resume_sections = Array(
-	new resume_ext_general(),
-//	new resume_ext_skills(),
-//	new resume_ext_employment(),
-//	new resume_ext_education(),
-//	new resume_ext_awards(),
-//	new resume_ext_finish()
+	new resume_ext_general(0),
+	new resume_ext_skills(1),
+	new resume_ext_employment(2),
+	new resume_ext_education(3),
+	new resume_ext_awards(4),
+	new resume_ext_finish(5)
 );
 /*$resume_pages = Array(
 	'general' => "form_resume_general.php",
@@ -146,11 +146,14 @@ function resume_options() { ?>
 <? }
 
 function resume_new_page() {
+
 /*	global $resume_pages;
-	global $resume_titles;
-	global $resume_ajax;
+	global $resume_titles;*/
+	//global $resume_ajax;
+	global $resume_sections;
 
 	$do_next = filter_input(INPUT_POST, 'do_next', FILTER_SANITIZE_STRING);
+
 
 ?>
 	<div class="wrap resume_wrap">
@@ -159,16 +162,17 @@ function resume_new_page() {
 
 	<ul class="tab_labels">
 <?
-	foreach($resume_titles as $key => $title) {
+	foreach($resume_sections as $sect) {
 ?>
-		<li><a href="#tab-<?= $key ?>"><?= $title ?></a></li>
+		<li><a href="#tab-<?= $sect->get_id() ?>"><?= $sect->get_title() ?></a></li>
 <?
 	}
 ?>	</ul><?
 
-	foreach($resume_pages as $key => $next) {
-?>		<div id="tab-<?= $key ?>"> <?
-		include($next);
+	foreach($resume_sections as $i => $sect) {
+		//var_dump($sect);
+?>		<div id="tab-<?= $sect->get_id() ?>"> <?
+		$sect->format_wp_form($resume_sections[$i - 1], $resume_sections[$i + 1]);
 ?>		</div><?
 	}
 ?>
@@ -176,7 +180,7 @@ function resume_new_page() {
 	</div>
 	</div>
 <?
-*/}
+}
 
 add_action('wp_ajax_resume_new', 'resume_new');
 add_action('wp_ajax_resume_finalize', 'resume_finalize');
@@ -253,26 +257,26 @@ function resume_format_dl_item($strong, $title, $desc) {
 }*/
 
 function resume_new() {/*
-	global $resume_filters;
+	global $resume_filters;*/
+	global $resume_sections;
 
 	session_start();
 
-	$sub_action = filter_input(INPUT_POST, 'sub_action', FILTER_SANITIZE_STRING);
+	$sub_action = filter_input(INPUT_POST, 'sub_action', FILTER_SANITIZE_NUMBER_INT);
 
-	if($sub_action == 'general') {
-		$_SESSION['resume'][$sub_action] = filter_input_array(INPUT_POST, $resume_filters[$sub_action]);
-	} else {
-		$_SESSION['resume'][$sub_action][] = filter_input_array(INPUT_POST, $resume_filters[$sub_action]);
-	}
+	//var_dump($resume_sections, $sub_action, $_SESSION);
 
-	die(resume_format_dl($_SESSION['resume'][$sub_action], $sub_action));*/
+	$resume_sections[$sub_action]->add_data();
+
+	die($resume_sections[$sub_action]->format_wp_xhtml());
 }
 
-function resume_finalize() {/*
+function resume_finalize() {
 	global $wpdb;
 	global $user_ID;
 
-	global $resume_titles;
+	/*global $resume_titles;*/
+	global $resume_sections;
 
 	session_start();
 
@@ -292,7 +296,15 @@ function resume_finalize() {/*
 	)
 SQL;
 
-	$body = "<h2>" . $_SESSION['resume']['general']['resume_name'] . "</h2>"
+	$body = "";
+
+	foreach($resume_sections as $sect) {
+		$body .= $sect->format_wp_xhtml();
+	}
+
+	var_dump($body);
+
+/*	$body = "<h2>" . $_SESSION['resume']['general']['resume_name'] . "</h2>"
 		. "<address>" . nl2br($_SESSION['resume']['general']['resume_address']) . "</address>"
 		. "<a href=\"mailto:" . $_SESSION['resume']['general']['resume_email'] . "\">" . $_SESSION['resume']['general']['resume_email'] . "</a>"
 		. "<a href=\"" . $_SESSION['resume']['general']['resume_website'] . "\">" . $_SESSION['resume']['general']['resume_website'] . "</a>"
@@ -307,13 +319,13 @@ SQL;
 		. resume_format_dl($_SESSION['resume']['education'], 'education')
 
 		. "<h3>" . $resume_titles['awards'] . "</h3>"
-		. resume_format_dl($_SESSION['resume']['awards'], 'awards');
+		. resume_format_dl($_SESSION['resume']['awards'], 'awards'); */
 
 	$wpdb->query(sprintf($query, $wpdb->posts, $user_ID, addslashes($body), $_SESSION['resume']['general']['resume_title']));
 
 	unset($_SESSION['resume']);
 
-	die("");*/
+	die("");
 }
 
 function resume_reset() {
