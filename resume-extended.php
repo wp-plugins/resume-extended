@@ -329,6 +329,7 @@ SQL;
 }
 
 function resume_reset() {
+	session_start();
 	unset($_SESSION['resume']);
 	die();
 }
