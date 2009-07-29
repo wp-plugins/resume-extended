@@ -113,6 +113,10 @@ p.desc {
 	width: 560px;
 }
 
+.resume_wrap .submit {
+	padding: inherit;
+}
+
 input:disabled {
 	background-image: url('images/cross_hatch.png');
 	color: #dfdfdf;

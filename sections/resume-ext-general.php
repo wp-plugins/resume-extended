@@ -55,15 +55,18 @@ class resume_ext_general extends resume_ext_section {
 		$this->format_end_form($prev, $next);
 	}
 
-	public function create_db() {}
-	public function format_entry_xhtml($val) {}
+	public function create_db() {
+
+	}
+
+	public function format_entry_xhtml($val, $key) {}
 
 	public function format_wp_xhtml() {
-		return "<h2>" . $_SESSION['resume']['general']['resume_name'] . "</h2>"
-		. "<address>" . nl2br($_SESSION['resume']['general']['resume_address']) . "</address>"
-		. "<a href=\"mailto:" . $_SESSION['resume']['general']['resume_email'] . "\">" . $_SESSION['resume']['general']['resume_email'] . "</a><br />"
-		. "<a href=\"" . $_SESSION['resume']['general']['resume_website'] . "\">" . $_SESSION['resume']['general']['resume_website'] . "</a>"
-		. '<div id="resume_ext_objective">' . $_SESSION['resume']['general']['resume_objective'] . "</div>";
+		return "<h2>" . $_SESSION['resume'][$this->id]['resume_name'] . "</h2>"
+		. "<address>" . nl2br($_SESSION['resume'][$this->id]['resume_address']) . "</address>"
+		. "<a href=\"mailto:" . $_SESSION['resume'][$this->id]['resume_email'] . "\">" . $_SESSION['resume'][$this->id]['resume_email'] . "</a><br />"
+		. "<a href=\"" . $_SESSION['resume'][$this->id]['resume_website'] . "\">" . $_SESSION['resume'][$this->id]['resume_website'] . "</a>"
+		. '<div id="resume_ext_objective">' . $_SESSION['resume'][$this->id]['resume_objective'] . "</div>";
 	}
 
 	public function add_data() {

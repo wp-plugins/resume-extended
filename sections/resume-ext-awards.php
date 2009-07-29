@@ -41,7 +41,7 @@ class resume_ext_awards extends resume_ext_section {
 
 	public function create_db() {}
 
-	public function format_entry_xhtml($val) {
+	public function format_entry_xhtml($val, $key) {
 		return $this->format_dl_item($val['resume_award_title'], $val['resume_award_date'], $val['resume_award_desc']);
 	}
 

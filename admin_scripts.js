@@ -44,20 +44,23 @@
 			// add the tabs
 			$("#tabs").tabs();
 
-			$(".sub_form form").each(function () {
+			funk = function () {
 				var opt = {
 					target: "#" + this.id + "_target",
-					resetForm: true
-					//success: function(arg) {
+					resetForm: true,
+					success: function(arg) {
 						//console.log(arg);
 						//$("#" + this.id + "_target").fadeIn('slow');
-					//}
+						$(".sub_form form").each(funk);
+					}
 				};
 
 				//console.debug(this, opt);
 
 				$(this).ajaxForm(opt);
-			});
+			};
+
+			$(".sub_form form").each(funk);
 
 			$("#resume_submit").ajaxForm();
 
@@ -68,7 +71,7 @@
 		});
 
 		jQuery.fn.check_disables = function ( check_disables ) {
-			console.debug(this, $(this));
+			//console.debug(this, $(this));
 			return this.each(function () {
 				$(this).change(function () {
 					if($(this).is("input:checked")) {

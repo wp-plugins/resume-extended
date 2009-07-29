@@ -4,6 +4,8 @@ abstract class resume_ext_section {
 	protected $cta = "Add Generic";
 	protected $id = 'generic';
 
+	protected $wp_action = "resume_new";
+
 	protected $index = 0;
 
 	protected $filters = FILTER_SANITIZE_SPECIAL_CHARS;
@@ -22,7 +24,7 @@ abstract class resume_ext_section {
 		<div id="resume_<?= $this->id ?>_target">
 		</div>
 		<form action="<?= $resume_ajax ?>" method="post" id="resume_<?= $this->id ?>">
-			<input type="hidden" name="action" value="resume_new" />
+			<input type="hidden" name="action" value="<?= $this->wp_action ?>" />
 			<input type="hidden" name="sub_action" value="<?= $this->index ?>" />
 <?
 	}
@@ -61,7 +63,7 @@ abstract class resume_ext_section {
 	}
 
 	abstract public function create_db();
-	abstract public function format_entry_xhtml($val);
+	abstract public function format_entry_xhtml($val, $key);
 	abstract public function format_wp_form($prev, $next);
 
 	public function format_wp_xhtml() {
@@ -70,12 +72,16 @@ abstract class resume_ext_section {
 		session_start();
 
 		if($_SESSION['resume'][$this->id]) {
-			foreach($_SESSION['resume'][$this->id] as $val) {
-				$output .= $this->format_entry_xhtml($val);
+			foreach($_SESSION['resume'][$this->id] as $key => $val) {
+				$output .= $this->format_entry_xhtml($val, $key);
 			}
 		}
 
 		return $output . "</dl>";
+	}
+
+	public function format_wp_admin_xhtml() {
+		return $this->format_wp_xhtml();
 	}
 
 	public function add_data() {
@@ -95,6 +101,7 @@ abstract class resume_ext_section {
 
 	public function __construct($index) {
 		$this->index = $index;
+		$this->id = $this->id . "_" . $index;
 	}
 
 }

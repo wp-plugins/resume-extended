@@ -1,6 +1,6 @@
 === Resume Extended ===
 Contributors: AaronAsAChimp
-Tags: resume, pages
+Tags: resume, page, pages
 Requires at least: 2.8
 Tested up to: 2.8
 Stable tag: 0.1
@@ -17,7 +17,7 @@ This version only creates a page that contains your resume.  It's buggy and not 
 * Privacy controls
 * Resume sections:
 	* Publications
-	* Projects
+	* Projects **(DONE: v0.2)**
 	* References
 * Export to:
 	* PDF
@@ -51,3 +51,6 @@ This version only creates a page that contains your resume.  It's buggy and not 
 
 = 0.1 =
 create a basic resume.
+
+= 0.2 =
+added projects to Employment History.

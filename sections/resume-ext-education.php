@@ -49,7 +49,7 @@ class resume_ext_education extends resume_ext_section {
 
 	public function create_db() {}
 
-	public function format_entry_xhtml($val) {
+	public function format_entry_xhtml($val, $key) {
 		return $this->format_dl_item(NULL, $val['resume_institution'], $val['resume_major']
 			.( (($val['resume_minor'] != "Minor" ) && ($val['resume_minor'] != "" ))? " Minor: " . $val['resume_minor']: "")
 			. " " . $val['resume_degree']

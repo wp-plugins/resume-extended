@@ -1,4 +1,8 @@
 <?php
+
+require_once('resume-ext-section.php');
+require_once('resume-ext-projects.php');
+
 class resume_ext_employment extends resume_ext_section {
 	protected $title = "Employment History";
 	protected $cta = "Add Employer";
@@ -12,6 +16,8 @@ class resume_ext_employment extends resume_ext_section {
 		'resume_currently_employ' => FILTER_VALIDATE_BOOLEAN,
 		'resume_job_desc' => FILTER_SANITIZE_SPECIAL_CHARS);
 
+	protected $projects = Array();
+
 	public function format_wp_form($prev, $next) {
 		$this->format_start_form() ?>
 		<script>
@@ -22,7 +28,7 @@ class resume_ext_employment extends resume_ext_section {
 		</script>
 
 		<div class="control_box">
-			<label for="resume_employer" class="form_label">Employer<span class="desc"> &middot; The name of the company you worked for.</span</label>
+			<label for="resume_employer" class="form_label">Employer<span class="desc"> &middot; The name of the company you worked for.</span></label>
 			<input name="resume_employer" id="resume_employer" class="form_text" type="text" />
 		</div>
 
@@ -55,7 +61,46 @@ class resume_ext_employment extends resume_ext_section {
 
 	public function create_db() {}
 
-	public function format_entry_xhtml($val) {
+	public function format_wp_admin_xhtml() {
+		$output = "<h3>" . $this->title . "</h3>" . "<dl>";
+
+		session_start();
+
+		if($_SESSION['resume'][$this->id]) {
+			foreach($_SESSION['resume'][$this->id] as $key => $val) {
+				$project = new resume_ext_projects($key);
+
+				$output .= $this->format_entry_xhtml($val, $key);
+
+				ob_start();
+				$project->format_wp_form(NULL, NULL);
+				$output .= ob_get_contents();
+				ob_end_clean();
+
+			}
+		}
+
+		return $output . "</dl>";
+	}
+
+	public function format_wp_xhtml() {
+		$output = "<h3>" . $this->title . "</h3>" . "<dl>";
+
+		session_start();
+
+		if($_SESSION['resume'][$this->id]) {
+			foreach($_SESSION['resume'][$this->id] as $key => $val) {
+				$project = new resume_ext_projects($key);
+
+				$output .= $this->format_entry_xhtml($val, $key) . $project->format_wp_xhtml();
+
+			}
+		}
+
+		return $output . "</dl>";
+	}
+
+	public function format_entry_xhtml($val, $key) {
 		return $this->format_dl_item($val['resume_employer'], $val['resume_job_title'], $val['resume_start_employ'] . " &ndash; " . (($val['resume_currently_employ'])? "Present" : $val['resume_end_employ']) . "<br />" . $val['resume_job_desc']);
 	}
 }

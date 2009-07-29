@@ -46,64 +46,6 @@ $resume_sections = Array(
 	new resume_ext_awards(4),
 	new resume_ext_finish(5)
 );
-/*$resume_pages = Array(
-	'general' => "form_resume_general.php",
-	'skills' => "form_resume_skills.php",
-	'employment' => "form_resume_employment.php",
-	'education' => "form_resume_education.php",
-	'awards' => "form_resume_awards.php",
-	'finish' => "form_resume_finish.php"
-);
-
-$resume_titles = Array(
-	'general' => "General Info",
-	'skills' => "Skills",
-	'employment' => "Employment History",
-	'education' => "Education",
-	'awards' => "Awards &amp; Honors",
-	'finish' => "Finish"
-);
-
-function resume_start_form($title) {
-	global $resume_titles;
-	global $resume_ajax;
- ?>
-	<div class="sub_form">
-	<!--<h3>New Resume - <?= $resume_titles[$title]?></h3>-->
-	<div id="resume_<?= $title ?>_target">
-	</div>
-	<form action="<?= $resume_ajax ?>" method="post" id="resume_<?= $title ?>">
-		<input type="hidden" name="action" value="resume_new" />
-		<input type="hidden" name="sub_action" value="<?= $title ?>" />
-<? }
-
-function resume_end_form($next, $middle, $prev = NULL) {
-	global $resume_titles; ?>
-		<script type="text/javascript">(function($) {
-
-			$(document).ready(function () {
-				$("#next_page_<?= $next ?>").click(function() {
-					$("#tabs").tabs('select', '#tab-<?= $next ?>');
-				});
-	<?	if($prev) { ?>
-				$("#prev_page_<?= $prev ?>").click(function() {
-					$("#tabs").tabs('select', '#tab-<?= $prev ?>');
-				});
-	<? } ?>
-			});
-
-		})(jQuery);</script>
-		<p class="submit">
-	<? if($prev) { ?>
-			<input type="button" id="prev_page_<?= $prev ?>" value="&laquo;"/>
-	<? } ?>
-			<input type="submit" id="ajax_action" value="<?= $middle ?>" />
-			<input type="button" id="next_page_<?= $next ?>" class="button-primary" value="<?= $resume_titles[$next]?> &raquo;"/>
-		</p>
-	</form>
-
-	</div>
-<? }*/
 
 add_filter('admin_menu', 'resume_menu');
 add_action('admin_print_styles', 'resume_admin_styles');
@@ -146,10 +88,6 @@ function resume_options() { ?>
 <? }
 
 function resume_new_page() {
-
-/*	global $resume_pages;
-	global $resume_titles;*/
-	//global $resume_ajax;
 	global $resume_sections;
 
 	$do_next = filter_input(INPUT_POST, 'do_next', FILTER_SANITIZE_STRING);
@@ -183,81 +121,11 @@ function resume_new_page() {
 }
 
 add_action('wp_ajax_resume_new', 'resume_new');
+add_action('wp_ajax_resume_new_project', 'resume_new_project');
 add_action('wp_ajax_resume_finalize', 'resume_finalize');
 add_action('wp_ajax_resume_reset', 'resume_reset');
 
-/*
-$resume_filters = Array(
-	'general' => Array(
-		'resume_title' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_objective' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_name' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_address' => FILTER_SANITIZE_MAGIC_QUOTES,
-		'resume_email' => FILTER_VALIDATE_EMAIL,
-		'resume_website' => FILTER_VALIDATE_URL),
-	'skills' => Array(
-		'resume_skillset_name' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_skillset_list' => FILTER_SANITIZE_SPECIAL_CHARS),
-	'employment' => Array(
-		'resume_employer' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_job_title' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_start_employ' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_end_employ' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_currently_employ' => FILTER_VALIDATE_BOOLEAN,
-		'resume_job_desc' => FILTER_SANITIZE_SPECIAL_CHARS),
-	'education' => Array(
-		'resume_institution' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_major' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_minor' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_degree' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_currently_enrolled' => FILTER_VALIDATE_BOOLEAN,
-		'resume_date_graduated' => FILTER_SANITIZE_SPECIAL_CHARS),
-	'awards' => Array(
-		'resume_award_title' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_award_date' => FILTER_SANITIZE_SPECIAL_CHARS,
-		'resume_award_desc' => FILTER_SANITIZE_SPECIAL_CHARS)
-);
-
-function resume_format_dl($items_array, $sub_action) {
-	$output = "<dl>";
-
-	//var_dump($items_array);
-
-	//var_dump($sub_action, $_SESSION['resume'][$sub_action], $resume_filters[$sub_action]);
-	if($items_array) {
-		foreach($items_array as $val) {
-			switch($sub_action) {
-				case 'general':
-					break;
-				case 'skills':
-					$output .= resume_format_dl_item(NULL, $val['resume_skillset_name'], $val['resume_skillset_list'] );
-					break;
-				case 'employment':
-					$output .= resume_format_dl_item($val['resume_employer'], $val['resume_job_title'], $val['resume_start_employ'] . " &ndash; " . (($val['resume_currently_employ'])? "Present" : $val['resume_end_employ']) . "<br />" . $val['resume_job_desc']);
-					break;
-				case 'education':
-					$output .= resume_format_dl_item(NULL, $val['resume_institution'], $val['resume_major']
-						.( ($val['resume_minor'] != "Minor" )? " Minor: " . $val['resume_minor']: "")
-						. " " . $val['resume_degree']
-						. " " . (($val['resume_currently_enrolled'])? "Currently Enrolled" : $val['resume_date_graduated']) );
-					break;
-				case 'awards':
-					$output .= resume_format_dl_item($val['resume_award_title'], $val['resume_award_date'], $val['resume_award_desc']);
-					break;
-			}
-		}
-	}
-
-	return $output . "</dl>";
-}
-
-function resume_format_dl_item($strong, $title, $desc) {
-	return "<dt class=\"part_title\"> " . (($strong)? "<strong>" . $strong . "</strong> ": "") . $title . "</dt>"
-		. "<dd class=\"part_desc\">" . $desc . "</dd>";
-}*/
-
-function resume_new() {/*
-	global $resume_filters;*/
+function resume_new() {
 	global $resume_sections;
 
 	session_start();
@@ -268,14 +136,28 @@ function resume_new() {/*
 
 	$resume_sections[$sub_action]->add_data();
 
-	die($resume_sections[$sub_action]->format_wp_xhtml());
+	die($resume_sections[$sub_action]->format_wp_admin_xhtml());
+}
+
+function resume_new_project() {
+	global $resume_sections;
+
+	session_start();
+
+	$sub_action = filter_input(INPUT_POST, 'sub_action', FILTER_SANITIZE_NUMBER_INT);
+
+	//var_dump($resume_sections, $sub_action, $_SESSION);
+
+	$prj = new resume_ext_projects($sub_action);
+	$prj->add_data();
+
+	die($prj->format_wp_admin_xhtml());
 }
 
 function resume_finalize() {
 	global $wpdb;
 	global $user_ID;
 
-	/*global $resume_titles;*/
 	global $resume_sections;
 
 	session_start();
@@ -303,23 +185,6 @@ SQL;
 	}
 
 	var_dump($body);
-
-/*	$body = "<h2>" . $_SESSION['resume']['general']['resume_name'] . "</h2>"
-		. "<address>" . nl2br($_SESSION['resume']['general']['resume_address']) . "</address>"
-		. "<a href=\"mailto:" . $_SESSION['resume']['general']['resume_email'] . "\">" . $_SESSION['resume']['general']['resume_email'] . "</a>"
-		. "<a href=\"" . $_SESSION['resume']['general']['resume_website'] . "\">" . $_SESSION['resume']['general']['resume_website'] . "</a>"
-
-		. "<h3>" . $resume_titles['skills'] . "</h3>"
-		. resume_format_dl($_SESSION['resume']['skills'], 'skills')
-
-		. "<h3>" . $resume_titles['employment'] . "</h3>"
-		. resume_format_dl($_SESSION['resume']['employment'], 'employment')
-
-		. "<h3>" . $resume_titles['education'] . "</h3>"
-		. resume_format_dl($_SESSION['resume']['education'], 'education')
-
-		. "<h3>" . $resume_titles['awards'] . "</h3>"
-		. resume_format_dl($_SESSION['resume']['awards'], 'awards'); */
 
 	$wpdb->query(sprintf($query, $wpdb->posts, $user_ID, addslashes($body), $_SESSION['resume']['general']['resume_title']));
 
