@@ -17,7 +17,7 @@
  * Normal sized light text
  * used to denote inline lables
  */
-
+.pre_label,
 .inline_label_inactive {
 	font-size: 14.686px;
 	color: #999;
@@ -74,6 +74,14 @@ p.desc {
  */
 .inline_label {
 	display: none;
+}
+
+/*
+ * pre label
+ */
+.pre_label {
+	vertical-align: baseline;
+	margin-left: 5px;
 }
 
 .form_text.one_third,

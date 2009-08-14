@@ -33,15 +33,15 @@ Create a resume easily, and allow employers to view it on your blog.
 	* PDF
 	* Microsoft Word .doc and .docx
 	* Text
-	* enhanced XHTML
-	* XML Resume Library
+	* enhanced XHTML **(PLANNED: v0.3)**
+	* XML Resume Library **(PLANNED: v0.3)**
 * Import from:
 	* PDF
 	* Microsoft Word .doc and .docx
 	* Text
 	* hResume
 		* this includes LinkedIn
-	* XML Resume Library
+	* XML Resume Library **(PLANNED: v0.3)**
 
 
 == Installation ==
@@ -59,7 +59,9 @@ Create a resume easily, and allow employers to view it on your blog.
 == Changelog ==
 
 = 0.1 =
-create a basic resume.
+* create a basic resume.
 
 = 0.2 =
-added projects to Employment History.
+* added projects to Employment History.
+* store data in database for later functionality.
+* other bug fixes

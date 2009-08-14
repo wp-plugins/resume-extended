@@ -27,7 +27,7 @@ class resume_ext_awards extends resume_ext_section {
 		<label for="resume_award_title" class="inline_label">Title</label>
 		<input name="resume_award_title" id="resume_award_title" type="text" class="form_text" />
 
-		<label for="resume_award_date" class="inline_label">Date</label>
+		<label for="resume_award_date" class="pre_label">Date</label>
 		<input name="resume_award_date" id="resume_award_date" type="text" class="form_date one_third" />
 
 		<label for="resume_award_desc" class="inline_label">Description</label>
