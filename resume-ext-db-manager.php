@@ -98,7 +98,7 @@ class resume_ext_db_manager {
 		INDEX `vcard_id` (`vcard_id` ASC),
 		CONSTRAINT `vcard_id_from_vcard_ci`
 			FOREIGN KEY (`vcard_id` )
-			REFERENCES `%s` (`vcard_id` )
+			REFERENCES `%s` (`vcard_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION)
 		ENGINE = InnoDB;";
@@ -128,7 +128,7 @@ class resume_ext_db_manager {
 		INDEX `vcard_id` (`vcard_id` ASC),
 		CONSTRAINT `vcard_id_from_resume`
 			FOREIGN KEY (`vcard_id` )
-			REFERENCES `%s` (`vcard_id` )
+			REFERENCES `%s` (`vcard_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION)
 		ENGINE = InnoDB;";
@@ -153,14 +153,14 @@ class resume_ext_db_manager {
 	// second param is skillset
 	const sql_skill = "
 		CREATE TABLE `%s` (
-			`skill_id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-			`skillset_id` INT UNSIGNED NULL ,
-			`name` VARCHAR(32) NULL ,
-		PRIMARY KEY (`skill_id`) ,
-		INDEX `skillset_id` (`skillset_id` ASC) ,
+			`skill_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+			`skillset_id` INT UNSIGNED NULL,
+			`name` VARCHAR(32) NULL,
+		PRIMARY KEY (`skill_id`),
+		INDEX `skillset_id` (`skillset_id` ASC),
 		CONSTRAINT `skillset_id_from_skill`
 			FOREIGN KEY (`skillset_id` )
-			REFERENCES `%s` (`skillset_id` )
+			REFERENCES `%s` (`skillset_id`)
 			ON DELETE CASCADE
 			ON UPDATE CASCADE)
 		ENGINE = InnoDB;";
@@ -170,19 +170,19 @@ class resume_ext_db_manager {
 	// third param is resume
 	const sql_references = "
 		CREATE TABLE `%s` (
-			`vcard_vcard_id` INT UNSIGNED NOT NULL ,
-			`resume_resume_id` INT UNSIGNED NOT NULL ,
-		PRIMARY KEY (`vcard_vcard_id`, `resume_resume_id`) ,
-		INDEX `fk_vcard_has_resume_vcard` (`vcard_vcard_id` ASC) ,
-		INDEX `fk_vcard_has_resume_resume` (`resume_resume_id` ASC) ,
+			`vcard_vcard_id` INT UNSIGNED NOT NULL,
+			`resume_resume_id` INT UNSIGNED NOT NULL,
+		PRIMARY KEY (`vcard_vcard_id`, `resume_resume_id`),
+		INDEX `fk_vcard_has_resume_vcard` (`vcard_vcard_id` ASC),
+		INDEX `fk_vcard_has_resume_resume` (`resume_resume_id` ASC),
 		CONSTRAINT `fk_vcard_has_resume_vcard`
-			FOREIGN KEY (`vcard_vcard_id` )
-			REFERENCES `%s` (`vcard_id` )
+			FOREIGN KEY (`vcard_vcard_id`)
+			REFERENCES `%s` (`vcard_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION,
 		CONSTRAINT `fk_vcard_has_resume_resume`
-			FOREIGN KEY (`resume_resume_id` )
-			REFERENCES `%s` (`resume_id` )
+			FOREIGN KEY (`resume_resume_id`)
+			REFERENCES `%s` (`resume_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION)
 		ENGINE = InnoDB;";
@@ -192,23 +192,23 @@ class resume_ext_db_manager {
 	// third param is vevent
 	const sql_employment_history = "
 		CREATE TABLE `%s` (
-			`employment_history_id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-			`resume_id` INT UNSIGNED NULL ,
-			`vevent_id` INT unsigned NULL ,
-			`employer` VARCHAR(32) NULL ,
-			`title` VARCHAR(32) NULL ,
-			`status` TINYINT(1) NULL ,
-		PRIMARY KEY (`employment_history_id`) ,
-		INDEX `resume_id` (`resume_id` ASC) ,
-		INDEX `vevent_id` (`vevent_id` ASC) ,
+			`employment_history_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+			`resume_id` INT UNSIGNED NULL,
+			`vevent_id` INT unsigned NULL,
+			`employer` VARCHAR(32) NULL,
+			`title` VARCHAR(32) NULL,
+			`status` TINYINT(1) NULL,
+		PRIMARY KEY (`employment_history_id`),
+		INDEX `resume_id` (`resume_id` ASC),
+		INDEX `vevent_id` (`vevent_id` ASC),
 		CONSTRAINT `resume_id_from_eh`
 			FOREIGN KEY (`resume_id` )
-			REFERENCES `%s` (`resume_id` )
+			REFERENCES `%s` (`resume_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION,
 		CONSTRAINT `vevent_id_from_eh`
 			FOREIGN KEY (`vevent_id` )
-			REFERENCES `%s` (`vevent_id` )
+			REFERENCES `%s` (`vevent_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION)
 		ENGINE = InnoDB;";
@@ -217,12 +217,12 @@ class resume_ext_db_manager {
 	// second param is employment history
 	const sql_projects = "
 		CREATE TABLE `%s` (
-			`project_id` INT UNSIGNED NOT NULL ,
-			`employment_history_id` INT UNSIGNED NULL ,
-			`name` VARCHAR(32) NULL ,
-			`description` VARCHAR(128) NULL ,
-		PRIMARY KEY (`project_id`) ,
-		INDEX `resume_id` (`employment_history_id` ASC) ,
+			`project_id` INT UNSIGNED NOT NULL,
+			`employment_history_id` INT UNSIGNED NULL,
+			`name` VARCHAR(32) NULL,
+			`description` VARCHAR(128) NULL,
+		PRIMARY KEY (`project_id`),
+		INDEX `resume_id` (`employment_history_id` ASC),
 		CONSTRAINT `resume_id_from_projects`
 			FOREIGN KEY (`employment_history_id` )
 			REFERENCES `%s` (`employment_history_id` )
@@ -236,24 +236,24 @@ class resume_ext_db_manager {
 	const sql_degree = "
 		CREATE TABLE `%s` (
 			`degree_id` INT UNSIGNED NOT NULL auto_increment,
-			`resume_id` INT UNSIGNED NULL ,
-			`vevent_id` INT unsigned NULL ,
-			`institution` VARCHAR(32) NULL ,
-			`major` VARCHAR(32) NULL ,
-			`minor` VARCHAR(32) NULL ,
-			`level` VARCHAR(32) NULL ,
-			`enrolled` TINYINT(1) NULL ,
-		PRIMARY KEY (`degree_id`) ,
-		INDEX `resume_id` (`resume_id` ASC) ,
-		INDEX `vevent_id` (`vevent_id` ASC) ,
+			`resume_id` INT UNSIGNED NULL,
+			`vevent_id` INT unsigned NULL,
+			`institution` VARCHAR(32) NULL,
+			`major` VARCHAR(32) NULL,
+			`minor` VARCHAR(32) NULL,
+			`level` VARCHAR(32) NULL,
+			`enrolled` TINYINT(1) NULL,
+		PRIMARY KEY (`degree_id`),
+		INDEX `resume_id` (`resume_id` ASC),
+		INDEX `vevent_id` (`vevent_id` ASC),
 		CONSTRAINT `resume_id_from_degree`
 			FOREIGN KEY (`resume_id` )
-			REFERENCES `%s` (`resume_id` )
+			REFERENCES `%s` (`resume_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION,
 		CONSTRAINT `vevent_id_from_degree`
 			FOREIGN KEY (`vevent_id` )
-			REFERENCES `%s` (`vevent_id` )
+			REFERENCES `%s` (`vevent_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION)
 		ENGINE = InnoDB;";
@@ -263,17 +263,17 @@ class resume_ext_db_manager {
 	// third param is vevent
 	const sql_awards = "
 		CREATE TABLE `%s` (
-			`resume_id` INT UNSIGNED NOT NULL ,
-			`vevent_id` INT unsigned NOT NULL ,
+			`resume_id` INT UNSIGNED NOT NULL,
+			`vevent_id` INT unsigned NOT NULL,
 		INDEX `resume_id` (`resume_id` ASC) ,
-		PRIMARY KEY (`resume_id`, `vevent_id`) ,
-		INDEX `vevent_id` (`vevent_id` ASC) ,
+		PRIMARY KEY (`resume_id`, `vevent_id`),
+		INDEX `vevent_id` (`vevent_id` ASC),
 		FOREIGN KEY (`resume_id` )
-			REFERENCES `%s` (`resume_id` )
+			REFERENCES `%s` (`resume_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION,
 		FOREIGN KEY (`vevent_id` )
-			REFERENCES `%s` (`vevent_id` )
+			REFERENCES `%s` (`vevent_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION)
 		ENGINE = InnoDB;";
