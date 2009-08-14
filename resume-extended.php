@@ -66,45 +66,64 @@ $resume_sections = Array(
 );
 
 add_filter('admin_menu', 'resume_menu');
+
 add_action('admin_print_styles', 'resume_admin_styles');
 add_action('admin_print_scripts', 'resume_admin_scripts');
 
+
 function resume_admin_styles () {
+	// outright stolen from NextGEN
+	if(!isset($_GET['page']))
+		return;
+
 	global $resume_path;
-	wp_enqueue_style('resume_admin_css', $resume_path . "admin_styles.css");
-	wp_enqueue_style('resume_ui_smoothness', $resume_path . "css/smoothness/jquery-ui-1.7.2.custom.css");
+
+	switch($_GET['page']) {
+		case 'resume_new_page':
+			wp_enqueue_style('resume_admin_css', $resume_path . "admin_styles.css");
+			wp_enqueue_style('resume_ui_smoothness', $resume_path . "css/smoothness/jquery-ui-1.7.2.custom.css");
+			break;
+	}
 }
 
 function resume_admin_scripts () {
+	// outright stolen from NextGEN
+	if(!isset($_GET['page']))
+		return;
+
 	global $resume_path;
 
-	wp_enqueue_script('jquery');
-	wp_enqueue_script('jquery-ui-core',false,array('jquery'));
-	wp_enqueue_script('jquery-ui-tabs',false,array('jquery', 'jquery-ui-core'));
-	wp_enqueue_script('jquery-form',false,array('jquery'));
+	switch($_GET['page']) {
+		case 'resume_new_page':
+			wp_enqueue_script('jquery');
+			wp_enqueue_script('jquery-ui-core',false,array('jquery'));
+			wp_enqueue_script('jquery-ui-tabs',false,array('jquery', 'jquery-ui-core'));
+			wp_enqueue_script('jquery-form',false,array('jquery'));
 
-	if(!wp_script_is('jquery-ui-datepicker')) { // The jquery datepicker might be eventually included.
-		wp_enqueue_script('jquery-ui-datepicker', $resume_path . "ui.datepicker.js", array('jquery', 'jquery-ui-core'));
-	} else {
-		wp_enqueue_script('jquery-ui-datepicker', false, array('jquery', 'jquery-ui-core'));
+			if(!wp_script_is('jquery-ui-datepicker')) { // The jquery datepicker might be eventually included.
+				wp_enqueue_script('jquery-ui-datepicker', $resume_path . "ui.datepicker.js", array('jquery', 'jquery-ui-core'));
+			} else {
+				wp_enqueue_script('jquery-ui-datepicker', false, array('jquery', 'jquery-ui-core'));
+			}
+
+			wp_enqueue_script('resume-admin-js', $resume_path . "admin_scripts.js", array('jquery', 'jquery-ui-core', 'jquery-ui-tabs','jquery-ui-datepicker', 'jquery-form'));
+			break;
 	}
-
-	wp_enqueue_script('resume-admin-js', $resume_path . "admin_scripts.js", array('jquery', 'jquery-ui-core', 'jquery-ui-tabs','jquery-ui-datepicker', 'jquery-form'));
 }
 
 function resume_menu()  {
 
-	add_menu_page('New R&eacute;sum&eacute;', 'R&eacute;sum&eacute;', 8, __FILE__, 'resume_new_page');
-	add_submenu_page(__FILE__, 'New R&eacute;sum&eacute;', 'New R&eacute;sum&eacute;', 8, __FILE__, 'resume_new_page');
+	add_menu_page('New R&eacute;sum&eacute;', 'R&eacute;sum&eacute;', 8, 'resume_new_page', 'resume_new_page');
+	add_submenu_page('resume_new_page', 'New R&eacute;sum&eacute;', 'New R&eacute;sum&eacute;', 8, 'resume_new_page', 'resume_new_page');
 
 	//add_options_page('Resume Options', 'Resume', 8, 'resumeoptions', 'resume_options');
 }
 
-function resume_options() { ?>
+/*function resume_options() { ?>
 <div class="wrap">
 	<h2>Resume Options</h2>
 </div>
-<? }
+<? }*/
 
 function resume_new_page() {
 	global $resume_sections;
@@ -138,7 +157,7 @@ function resume_new_page() {
 	</div>
 <?
 }
-
+/*
 function resume_error($errno, $errstr, $errfile, $errline, $errcontext) {
 	$errortype = array (
 			E_ERROR              => 'Error',
@@ -166,16 +185,16 @@ function resume_db_error($str, $query) {
 	FB::error($errstr, "WP DB Error");
 	FB::trace("WP DB Error");
 }
-
+*/
 function resume_ext_install() {
 	global $wpdb;
 	global $resume_sections;
 
 	// this may surface some errors that aren't fixable
-
+	/*
 	set_error_handler(resume_error);
 	$wpdb->hook_error('resume_db_error');
-	$wpdb->show_errors();
+	$wpdb->show_errors();*/
 
 	foreach( $resume_sections as $sect ) {
 
