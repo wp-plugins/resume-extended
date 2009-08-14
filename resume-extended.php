@@ -20,16 +20,34 @@
 Plugin Name: Resume Extended
 Plugin URI: http://sachimp/
 Description: Create and manage your Resume all from your blog.
-Version: 0.1
+Version: 0.2
 Author: Aaron Spaulding
 Author URI: http://sachimp.com/
 */
 
 /**
+ * Version 0.2
+ */
+define("RESUME_EXTENDED_NAME", "resume_ext_");
+define("RESUME_EXTENDED_VERSION", 2);
+define("RESUME_EXTENDED_VERSION_PRETTY", "0.2.0");
+
+/**
  * Determine the location
  */
-$resume_path = WP_CONTENT_URL.'/plugins/'.plugin_basename(dirname(__FILE__)).'/';
-$resume_ajax = get_bloginfo('wpurl') . "/wp-admin/admin-ajax.php";
+
+define("RESUME_EXT_PATH", WP_CONTENT_URL.'/plugins/'.plugin_basename(dirname(__FILE__)).'/');
+define("RESUME_EXT_ADMIN_PATH", get_bloginfo('wpurl') . "/wp-admin/");
+define("RESUME_EXT_AJAX_PATH", RESUME_EXT_ADMIN_PATH . "admin-ajax.php");
+
+global $resume_path;
+global $resume_ajax;
+global $resume_sections;
+
+$resume_path = RESUME_EXT_PATH;
+$resume_ajax = RESUME_EXT_AJAX_PATH;
+
+require_once('resume-ext-db-manager.php');
 
 include_once('sections/resume-ext-general.php');
 include_once('sections/resume-ext-skills.php');
@@ -59,6 +77,7 @@ function resume_admin_styles () {
 
 function resume_admin_scripts () {
 	global $resume_path;
+
 	wp_enqueue_script('jquery');
 	wp_enqueue_script('jquery-ui-core',false,array('jquery'));
 	wp_enqueue_script('jquery-ui-tabs',false,array('jquery', 'jquery-ui-core'));
@@ -75,8 +94,8 @@ function resume_admin_scripts () {
 
 function resume_menu()  {
 
-	add_menu_page('New Resume', 'Resume', 8, __FILE__, 'resume_new_page');
-	add_submenu_page(__FILE__, 'New Resume', 'New Resume', 8, __FILE__, 'resume_new_page');
+	add_menu_page('New R&eacute;sum&eacute;', 'R&eacute;sum&eacute;', 8, __FILE__, 'resume_new_page');
+	add_submenu_page(__FILE__, 'New R&eacute;sum&eacute;', 'New R&eacute;sum&eacute;', 8, __FILE__, 'resume_new_page');
 
 	//add_options_page('Resume Options', 'Resume', 8, 'resumeoptions', 'resume_options');
 }
@@ -120,6 +139,52 @@ function resume_new_page() {
 <?
 }
 
+function resume_error($errno, $errstr, $errfile, $errline, $errcontext) {
+	$errortype = array (
+			E_ERROR              => 'Error',
+			E_WARNING            => 'Warning',
+			E_PARSE              => 'Parsing Error',
+			E_NOTICE             => 'Notice',
+			E_CORE_ERROR         => 'Core Error',
+			E_CORE_WARNING       => 'Core Warning',
+			E_COMPILE_ERROR      => 'Compile Error',
+			E_COMPILE_WARNING    => 'Compile Warning',
+			E_USER_ERROR         => 'User Error',
+			E_USER_WARNING       => 'User Warning',
+			E_USER_NOTICE        => 'User Notice',
+			E_STRICT             => 'Runtime Notice',
+			E_RECOVERABLE_ERROR  => 'Catchable Fatal Error'
+			);
+	$errstr .= "\n  File: " . $errfile . "\n  Line: " . $errline;
+	FB::error($errstr, $errortype[$errno]);
+	FB::info($errcontext, $errortype[$errno] . " Context");
+	FB::trace($errortype[$errno] . " Stack Trace");
+}
+
+function resume_db_error($str, $query) {
+	$errstr = $str . "  Query: " . $query;
+	FB::error($errstr, "WP DB Error");
+	FB::trace("WP DB Error");
+}
+
+function resume_ext_install() {
+	global $wpdb;
+	global $resume_sections;
+
+	// this may surface some errors that aren't fixable
+
+	set_error_handler(resume_error);
+	$wpdb->hook_error('resume_db_error');
+	$wpdb->show_errors();
+
+	foreach( $resume_sections as $sect ) {
+
+		$sect->create_db();
+	}
+}
+
+register_activation_hook(__FILE__, 'resume_ext_install');
+
 add_action('wp_ajax_resume_new', 'resume_new');
 add_action('wp_ajax_resume_new_project', 'resume_new_project');
 add_action('wp_ajax_resume_finalize', 'resume_finalize');
@@ -162,7 +227,7 @@ function resume_finalize() {
 
 	session_start();
 
-	$query = <<< SQL
+	$query = "
 	insert into %s (
 		post_author,
 		post_content,
@@ -170,27 +235,33 @@ function resume_finalize() {
 		post_type,
 		post_status
 	) values (
-		"%d",
-		"%s",
-		"%s",
+		'%d',
+		'%s',
+		'%s',
 		'page',
 		'draft'
-	)
-SQL;
+	)";
 
 	$body = "";
+	$page_title = "";
 
 	foreach($resume_sections as $sect) {
+		$sect->insert_db();
 		$body .= $sect->format_wp_xhtml();
+		if(is_a($sect, 'resume_ext_general')) {
+			$page_title = $_SESSION['resume'][$sect->get_id()]['resume_title'];
+		}
 	}
 
-	var_dump($body);
+	//var_dump($body);
 
-	$wpdb->query(sprintf($query, $wpdb->posts, $user_ID, addslashes($body), $_SESSION['resume']['general']['resume_title']));
+	$wpdb->query(sprintf($query, $wpdb->posts, $user_ID, addslashes($body), $page_title));
+
+	resume_ext_general::update_last_resume_with_page_id($wpdb->insert_id);
 
 	unset($_SESSION['resume']);
 
-	die("");
+	die('{ page_id: "' . RESUME_EXT_ADMIN_PATH . "page.php?action=edit&post=".$wpdb->insert_id . '" }');
 }
 
 function resume_reset() {

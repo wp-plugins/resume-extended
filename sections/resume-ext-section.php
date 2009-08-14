@@ -63,6 +63,7 @@ abstract class resume_ext_section {
 	}
 
 	abstract public function create_db();
+	abstract public function insert_db();
 	abstract public function format_entry_xhtml($val, $key);
 	abstract public function format_wp_form($prev, $next);
 

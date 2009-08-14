@@ -39,7 +39,40 @@ class resume_ext_awards extends resume_ext_section {
 		$this->format_end_form($prev, $next);
 	}
 
-	public function create_db() {}
+	public function insert_db() {
+		global $wpdb;
+
+		if(isset($_SESSION['resume'][$this->id])) {
+			foreach($_SESSION['resume'][$this->id] as $key => $employment) {
+				// insert the vevent
+				$wpdb->insert(
+					resume_ext_db_manager::make_name(resume_ext_db_manager::name_vevent),
+					array(
+						'DTSTART' => strftime("%F", strtotime($award['resume_award_date'])),
+						'SUMMARY' => $award['resume_award_title'],
+						'DESCRIPTION' => $award['resume_award_desc']
+					));
+				resume_ext_db_manager::$id_vevent = $wpdb->insert_id;
+
+				// insert the awards entry
+				$wpdb->insert(
+					resume_ext_db_manager::make_name(resume_ext_db_manager::name_awards),
+					array(
+						'resume_id' => resume_ext_db_manager::$id_resume,
+						'vevent_id' => resume_ext_db_manager::$id_vevent
+					));
+				resume_ext_db_manager::$id_awards = $wpdb->insert_id;
+			}
+		}
+	}
+
+	public function create_db() {
+		$awards = resume_ext_db_manager::make_name(resume_ext_db_manager::name_awards);
+		$resume = resume_ext_db_manager::make_name(resume_ext_db_manager::name_resume);
+		$vevent = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vevent);
+
+		maybe_create_table($awards, sprintf(resume_ext_db_manager::sql_awards, $awards, $resume, $vevent));
+	}
 
 	public function format_entry_xhtml($val, $key) {
 		return $this->format_dl_item($val['resume_award_title'], $val['resume_award_date'], $val['resume_award_desc']);

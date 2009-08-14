@@ -9,7 +9,17 @@ Create and maintain your resume from within wordpress.
 
 == Description ==
 
-This version only creates a page that contains your resume.  It's buggy and not intended for production use.
+Create a resume easily, and allow employers to view it on your blog.
+
+= Current Features =
+
+* Save as a Page on your Wordpress Blog
+* Resume Sections
+	* Skills
+	* Employment History
+		* Projects
+	* Education
+	* Awards & Honors
 
 = Planned Features =
 
@@ -25,7 +35,6 @@ This version only creates a page that contains your resume.  It's buggy and not 
 	* Text
 	* enhanced XHTML
 	* XML Resume Library
-
 * Import from:
 	* PDF
 	* Microsoft Word .doc and .docx

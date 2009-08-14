@@ -37,7 +37,32 @@ class resume_ext_projects extends resume_ext_section {
 		$this->format_end_form(NULL, NULL);
 	}
 
-	public function create_db() {}
+	public function create_db() {
+		$projects = resume_ext_db_manager::make_name(resume_ext_db_manager::name_projects);
+		$eh = resume_ext_db_manager::make_name(resume_ext_db_manager::name_eh);
+
+		maybe_create_table($projects, sprintf(resume_ext_db_manager::sql_projects, $projects, $eh));
+	}
+
+	public function insert_db() {
+		global $wpdb;
+
+		if(isset($_SESSION['resume'][$this->id])) {
+			foreach($_SESSION['resume'][$this->id] as $key => $employment) {
+
+				// insert the emplyment history record
+				$wpdb->insert(
+					resume_ext_db_manager::make_name(resume_ext_db_manager::name_eh),
+					array(
+						'employment_history_id' => resume_ext_db_manager::$id_eh,
+						'name' => $employment['resume_project_name'],
+						'description' => $employment['resume_project_desc']
+					));
+				resume_ext_db_manager::$id_eh = $wpdb->insert_id;
+
+			}
+		}
+	}
 
 	public function format_entry_xhtml($val, $key) {
 		return $this->format_dl_item(NULL, $val['resume_project_name'], $val['resume_project_desc'] );

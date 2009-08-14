@@ -62,7 +62,15 @@
 
 			$(".sub_form form").each(funk);
 
-			$("#resume_submit").ajaxForm();
+			$("#resume_submit").ajaxForm(
+				{
+					dataType: 'json',
+
+					success: function (data) {
+						$("#resume_ext_finished").html('Your resume has been created as a draft <a href="' + data.page_id + '">Resume</a>')
+					}
+				}
+			);
 
 			$("#resume_reset").ajaxForm(function () {
 				$(".sub_form form").resetForm();

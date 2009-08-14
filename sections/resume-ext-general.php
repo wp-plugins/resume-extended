@@ -1,6 +1,7 @@
 <?php
 
 require_once('resume-ext-section.php');
+require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 class resume_ext_general extends resume_ext_section {
 	protected $title = "General Info";
@@ -56,7 +57,76 @@ class resume_ext_general extends resume_ext_section {
 	}
 
 	public function create_db() {
+		global $wpdb;
 
+		$resume = resume_ext_db_manager::make_name(resume_ext_db_manager::name_resume);
+		$vcard = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vcard);
+		$vcard_ci= resume_ext_db_manager::make_name(resume_ext_db_manager::name_vcard_ci);
+		$vevent = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vevent);
+
+		maybe_create_table($vcard, sprintf(resume_ext_db_manager::sql_vcard, $vcard));
+		maybe_create_table($vcard_ci, sprintf(resume_ext_db_manager::sql_vcard_ci, $vcard_ci, $vcard));
+		maybe_create_table($vevent, sprintf(resume_ext_db_manager::sql_vevent, $vevent));
+		maybe_create_table($resume, sprintf(resume_ext_db_manager::sql_resume, $resume, $vcard, $wpdb->posts));
+
+		add_option(RESUME_EXTENDED_NAME . "database_version", RESUME_EXTENDED_VERSION);
+	}
+
+	public function insert_db() {
+		global $wpdb;
+		$wpdb->insert(
+			resume_ext_db_manager::make_name(resume_ext_db_manager::name_vcard),
+			array(
+				'FN' => $_SESSION['resume'][$this->id]['resume_name'],
+				'URL' => $_SESSION['resume'][$this->id]['resume_website']
+			));
+		resume_ext_db_manager::$id_vcard = $wpdb->insert_id;
+
+		$wpdb->insert(
+			resume_ext_db_manager::make_name(resume_ext_db_manager::name_vcard_ci),
+			array(
+				'TEL' => NULL,
+				'EMAIL' => $_SESSION['resume'][$this->id]['resume_email'],
+				'LABEL' => $_SESSION['resume'][$this->id]['resume_address'],
+				'pref' => true,
+				'info_type' => 'home',
+				'vcard_id' => resume_ext_db_manager::$id_vcard
+			));
+		resume_ext_db_manager::$id_vcard_ci = $wpdb->insert_id;
+
+		$wpdb->insert(
+			resume_ext_db_manager::make_name(resume_ext_db_manager::name_resume),
+			array(
+				'title' => $_SESSION['resume'][$this->id]['resume_title'],
+				'vcard_id' => resume_ext_db_manager::$id_vcard,
+				'objective' => $_SESSION['resume'][$this->id]['resume_objective']
+			));
+		resume_ext_db_manager::$id_resume = $wpdb->insert_id;
+	}
+
+	/**
+	 * Update the last resume with its page id
+	 *
+	 * This function will not work correctly across page reloads.
+	 *
+	 * @since 0.2
+	 * @param $page_id int the id of the page that was just created
+	 *
+	 */
+	static public function update_last_resume_with_page_id($page_id) {
+		global $wpdb;
+		$wpdb->update(
+			resume_ext_db_manager::make_name(resume_ext_db_manager::name_resume),
+			array(
+				'page_id' => $page_id
+			),
+			array(
+				'resume_id' => resume_ext_db_manager::$id_resume
+			),
+			array(
+				'%d'
+			)
+		);
 	}
 
 	public function format_entry_xhtml($val, $key) {}

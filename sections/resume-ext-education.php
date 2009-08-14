@@ -25,6 +25,13 @@ class resume_ext_education extends resume_ext_section {
 		</script>
 
 		<div class="control_box">
+			<div class="form_label">
+			Degree
+			<p class="desc">
+			A degree from an accredited college or university.
+			</p>
+			</div>
+
 			<label for="resume_institution" class="inline_label">Institution</label>
 			<input name="resume_institution" id="resume_institution" type="text" class="form_text" /><br />
 
@@ -47,7 +54,44 @@ class resume_ext_education extends resume_ext_section {
 		$this->format_end_form($prev, $next);
 	}
 
-	public function create_db() {}
+	public function create_db() {
+		$degree = resume_ext_db_manager::make_name(resume_ext_db_manager::name_degree);
+		$resume = resume_ext_db_manager::make_name(resume_ext_db_manager::name_resume);
+		$vevent = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vevent);
+
+		maybe_create_table($degree, sprintf(resume_ext_db_manager::sql_awards, $degree, $resume, $vevent));
+	}
+
+	public function insert_db() {
+		global $wpdb;
+
+		if(isset($_SESSION['resume'][$this->id])) {
+
+			foreach($_SESSION['resume'][$this->id] as $edu) {
+				// insert the vevent
+				$wpdb->insert(
+					resume_ext_db_manager::make_name(resume_ext_db_manager::name_vevent),
+					array(
+						'DTEND' => strftime("%F", strtotime($edu['resume_start_employ'])),
+					));
+				resume_ext_db_manager::$id_vevent = $wpdb->insert_id;
+
+				$wpdb->insert(
+					resume_ext_db_manager::make_name(resume_ext_db_manager::name_degree),
+					array(
+						'resume_id' => resume_ext_db_manager::$id_resume,
+						'vevent_id' => resume_ext_db_manager::$id_vevent,
+						'institution' => $edu['resume_institution'],
+						'major' => $edu['resume_major'],
+						'minor' => $edu['resume_minor'],
+						'level' => $edu['resume_degree'],
+						'enrolled' => $edu['resume_currently_enrolled']
+					));
+				resume_ext_db_manager::$id_degree = $wpdb->insert_id;
+			}
+
+		}
+	}
 
 	public function format_entry_xhtml($val, $key) {
 		return $this->format_dl_item(NULL, $val['resume_institution'], $val['resume_major']

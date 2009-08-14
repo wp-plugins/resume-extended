@@ -17,7 +17,7 @@ class resume_ext_finish extends resume_ext_section {
 	<form action="<?= $resume_ajax ?>" method="POST" id="resume_submit">
 		<div>
 		<input type="hidden" name="action" value="resume_finalize" />
-		<input type="submit" class="button-primary" value="Create R&eacute;sum&eacute &raquo;" />
+		<input type="submit" class="button-primary" value="Create R&eacute;sum&eacute &raquo;" /><div id="resume_ext_finished"></div>
 		</div>
 	</form>
 
@@ -36,6 +36,7 @@ class resume_ext_finish extends resume_ext_section {
 	}
 
 	public function create_db() {}
+	public function insert_db() {}
 
 	public function format_entry_xhtml($val, $key) {
 		return "";
