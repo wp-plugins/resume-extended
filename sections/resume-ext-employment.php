@@ -117,7 +117,9 @@ class resume_ext_employment extends resume_ext_section {
 
 				$output .= $this->format_entry_xhtml($val, $key);
 
-				$output .= $project->format_wp_admin_xhtml();
+				if(isset($_SESSION['resume'][$project->get_id()])) {
+					$output .= $project->format_wp_admin_xhtml();
+				}
 
 				ob_start();
 				$project->format_wp_form(NULL, NULL);
