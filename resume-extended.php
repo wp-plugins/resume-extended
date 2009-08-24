@@ -115,7 +115,7 @@ function resume_admin_scripts () {
 }
 
 function resume_ext_content($content) {
-	$regex = "/\[resume-ext id=\"(\d+)\"]/";
+	$regex = "/\s*\[resume-ext id=\"(\d+)\"]\s*/";
 	//$regex = "/resume-ext/";
 	$content = preg_replace_callback($regex, 'resume_ext_make_body', $content);
 
@@ -124,13 +124,39 @@ function resume_ext_content($content) {
 
 function resume_ext_make_body($matches) {
 	global $resume_sections;
-	$body = "";
+
+	// wordpress wraps the first tag in a <p> use a decoy to before injecting the stylesheet
+	$body = '
+	<style>
+	.hresume ul li:before{
+		content: "";
+	}
+
+	.hresume ul {
+		text-indent: 0 !important;
+	}
+
+	.hresume h4 {
+		margin: 0;
+		padding-left: 10px;
+	}
+
+	.hresume .part_desc {
+		color: #727272;
+	}
+
+	.hresume > ul li  {
+		margin-left: 0 !important;
+		padding-left: 0 !important;
+	}
+	</style>
+	<div class="hresume">';
 
 	foreach($resume_sections as $sect) {
 		$body .= $sect->format_wp_xhtml($matches[1], NULL);
 	}
 
-	return $body;
+	return $body . "\n</div>";
 }
 
 function resume_menu()  {
@@ -197,26 +223,30 @@ function resume_error($errno, $errstr, $errfile, $errline, $errcontext) {
 			E_RECOVERABLE_ERROR  => 'Catchable Fatal Error'
 			);
 	$errstr .= "\n  File: " . $errfile . "\n  Line: " . $errline;
-	FB::error($errstr, $errortype[$errno]);
-	FB::info($errcontext, $errortype[$errno] . " Context");
-	FB::trace($errortype[$errno] . " Stack Trace");
+	if(class_exists(FB) && (ob_get_level() > 0)) {
+		FB::error($errstr, $errortype[$errno]);
+		FB::info($errcontext, $errortype[$errno] . " Context");
+		FB::trace($errortype[$errno] . " Stack Trace");
+	}
 }
 
 function resume_db_error($str, $query) {
-	$errstr = $str . "  Query: " . $query;
-	FB::error($errstr, "WP DB Error");
-	FB::trace("WP DB Error");
+	if(class_exists(FB) && (ob_get_level() > 0)) {
+		$errstr = $str . "  Query: " . $query;
+		FB::error($errstr, "WP DB Error");
+		FB::trace("WP DB Error");
+	}
 }
+
+// this may surface some errors that aren't fixable
+//   see bug: #10536
+set_error_handler(resume_error);
+$wpdb->hook_error('resume_db_error');
+$wpdb->show_errors();
 
 function resume_ext_install() {
 	global $wpdb;
 	global $resume_sections;
-
-	// this may surface some errors that aren't fixable
-	/*
-	set_error_handler(resume_error);
-	$wpdb->hook_error('resume_db_error');
-	$wpdb->show_errors();*/
 
 	foreach( $resume_sections as $sect ) {
 
@@ -280,7 +310,7 @@ function resume_finalize() {
 		'%s',
 		'%s',
 		'page',
-		'static'
+		'draft'
 	)";
 
 	$body = "";

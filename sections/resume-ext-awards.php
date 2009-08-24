@@ -86,7 +86,7 @@ class resume_ext_awards extends resume_ext_section {
 				$vevent,
 				$resume_id);
 
-		echo $query;
+		//echo $query;
 
 		return $wpdb->get_results(
 			$query,
