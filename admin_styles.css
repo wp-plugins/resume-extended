@@ -130,6 +130,11 @@ input:disabled {
 	color: #dfdfdf;
 }
 
+.preview_target {
+	border-bottom: 1px solid #ccc;
+	display:none;
+}
+
 .ui-widget-header {
 	font-size: .68em !important;
 }

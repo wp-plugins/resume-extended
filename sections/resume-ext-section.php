@@ -23,7 +23,7 @@ abstract class resume_ext_section {
 	protected function format_start_form() {
 		global $resume_ajax; ?>
 		<div class="sub_form">
-		<div id="resume_<?= $this->id ?>_target">
+		<div id="resume_<?= $this->id ?>_target" class="preview_target">
 		</div>
 		<form action="<?= $resume_ajax ?>" method="post" id="resume_<?= $this->id ?>">
 			<input type="hidden" name="action" value="<?= $this->wp_action ?>" />

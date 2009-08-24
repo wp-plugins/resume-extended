@@ -52,8 +52,8 @@
 				resetForm: true,
 				success: function(arg) {
 					//console.log(this);
-					//$("#" + this.id + "_target").fadeIn('slow');
 					$(".sub_form form").each(funk);
+					$(this).slideDown(1000);
 
 					//temp = $(form_closure);
 					//temp.resetForm();
