@@ -8,6 +8,8 @@ class resume_ext_general extends resume_ext_section {
 	protected $cta = "Add R&eacute;sum&eacute;";
 	protected $id = 'general';
 
+	protected $count_table = resume_ext_db_manager::name_resume;
+
 	protected $filters = Array(
 		'resume_title' => FILTER_SANITIZE_SPECIAL_CHARS,
 		'resume_objective' => FILTER_SANITIZE_SPECIAL_CHARS,

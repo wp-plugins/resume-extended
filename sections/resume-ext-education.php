@@ -7,6 +7,8 @@ class resume_ext_education extends resume_ext_section {
 	protected $cta = "Add Degree";
 	protected $id = 'education';
 
+	protected $count_table = resume_ext_db_manager::name_degree;
+
 	protected $filters = Array(
 		'resume_institution' => FILTER_SANITIZE_SPECIAL_CHARS,
 		'resume_major' => FILTER_SANITIZE_SPECIAL_CHARS,

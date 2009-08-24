@@ -8,6 +8,8 @@ class resume_ext_awards extends resume_ext_section {
 	protected $cta = "Add Award";
 	protected $id = 'awards';
 
+	protected $count_table = resume_ext_db_manager::name_awards;
+
 	protected $filters = Array(
 		'resume_award_title' => FILTER_SANITIZE_SPECIAL_CHARS,
 		'resume_award_date' => FILTER_SANITIZE_SPECIAL_CHARS,

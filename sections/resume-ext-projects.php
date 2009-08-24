@@ -8,6 +8,9 @@ class resume_ext_projects extends resume_ext_section {
 	protected $cta = "Add Project";
 	protected $id = 'projects';
 
+	protected $count_table = resume_ext_db_manager::name_projects;
+	protected $count_table_id = "employment_history_id";
+
 	protected $nest_level = 1;
 
 	protected $wp_action = "resume_new_project";

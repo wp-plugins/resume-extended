@@ -9,6 +9,8 @@ class resume_ext_skills extends resume_ext_section {
 	protected $cta = "Add Skillset";
 	protected $id = 'skills';
 
+	protected $count_table = resume_ext_db_manager::name_skillset;
+
 	protected $filters = Array(
 		'resume_skillset_name' => FILTER_SANITIZE_SPECIAL_CHARS,
 		'resume_skillset_list' => FILTER_SANITIZE_SPECIAL_CHARS);

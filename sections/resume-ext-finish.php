@@ -7,6 +7,8 @@ class resume_ext_finish extends resume_ext_section {
 	protected $cta = "";
 	protected $id = 'finish';
 
+	protected $count_table = "";
+
 	public function format_wp_form($prev, $next) {
 		global $resume_ajax;
 ?>

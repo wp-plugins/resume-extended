@@ -8,6 +8,8 @@ class resume_ext_employment extends resume_ext_section {
 	protected $cta = "Add Employer";
 	protected $id = 'employment';
 
+	protected $count_table = resume_ext_db_manager::name_eh;
+
 	protected $filters = Array(
 		'resume_employer' => FILTER_SANITIZE_SPECIAL_CHARS,
 		'resume_job_title' => FILTER_SANITIZE_SPECIAL_CHARS,
@@ -153,23 +155,27 @@ class resume_ext_employment extends resume_ext_section {
 	}
 
 	public function format_wp_xhtml($resume_id, $data) {
-		$output = "<h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . $this->title . "</h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . "<ul>";
+		if($this->has_entries($resume_id)) {
+			$output = "<h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . $this->title . "</h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . "<ul>";
 
-		if(!$data && !is_array($data)) {
-			$data = $this->select_db($resume_id);
+			if(!$data && !is_array($data)) {
+				$data = $this->select_db($resume_id);
+			}
+
+			foreach($data as $key => $val) {
+				$project = new resume_ext_projects($key);
+
+				$output .= $this->format_entry_xhtml($val, $key);
+				//if(isset($_SESSION['resume'][$project->get_id()])) {
+					$output .= $project->format_wp_xhtml($val['employment_history_id'], NULL);
+				//}
+
+			}
+
+			return $output . "</ul>";
 		}
 
-		foreach($data as $key => $val) {
-			$project = new resume_ext_projects($key);
-
-			$output .= $this->format_entry_xhtml($val, $key);
-			//if(isset($_SESSION['resume'][$project->get_id()])) {
-				$output .= $project->format_wp_xhtml($val['employment_history_id'], NULL);
-			//}
-
-		}
-
-		return $output . "</ul>";
+		return "";
 	}
 
 	public function format_entry_xhtml($val, $key) {

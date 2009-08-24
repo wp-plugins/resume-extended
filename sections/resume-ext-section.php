@@ -10,6 +10,9 @@ abstract class resume_ext_section {
 
 	protected $index = 0;
 
+	protected $count_table = "";
+	protected $count_table_id = "resume_id";
+
 	protected $filters = FILTER_SANITIZE_SPECIAL_CHARS;
 	protected function filter_data() {
 		return filter_input_array(INPUT_POST, $this->filters);
@@ -71,17 +74,21 @@ abstract class resume_ext_section {
 	abstract public function format_wp_form($prev, $next);
 
 	public function format_wp_xhtml($resume_id, $data) {
-		$output = "<h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . $this->title . "</h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . "<ul>";
+		if($this->has_entries($resume_id)) {
+			$output = "<h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . $this->title . "</h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . "<ul>";
 
-		if(!$data && !is_array($data)) {
-			$data = $this->select_db($resume_id);
+			if(!$data && !is_array($data)) {
+				$data = $this->select_db($resume_id);
+			}
+
+			foreach($data as $key => $val) {
+				$output .= $this->format_entry_xhtml($val, $key);
+			}
+
+			return $output . "</ul>";
 		}
 
-		foreach($data as $key => $val) {
-			$output .= $this->format_entry_xhtml($val, $key);
-		}
-
-		return $output . "</ul>";
+		return "";
 	}
 
 	public function format_wp_admin_xhtml() {
@@ -104,9 +111,15 @@ abstract class resume_ext_section {
 		return $this->id;
 	}
 
+	public function has_entries($id) {
+		global $wpdb;
+		return ($wpdb->get_var("select count(*) from $this->count_table where $this->count_table_id = $id") > 0);
+	}
+
 	public function __construct($index) {
 		$this->index = $index;
 		$this->id = $this->id . "_" . $index;
+		$this->count_table = resume_ext_db_manager::make_name($this->count_table);
 	}
 
 }
