@@ -217,7 +217,7 @@ class resume_ext_db_manager {
 	// second param is employment history
 	const sql_projects = "
 		CREATE TABLE `%s` (
-			`project_id` INT UNSIGNED NOT NULL,
+			`project_id` INT UNSIGNED NOT NULL auto_increment,
 			`employment_history_id` INT UNSIGNED NULL,
 			`name` VARCHAR(32) NULL,
 			`description` VARCHAR(128) NULL,
@@ -279,5 +279,98 @@ class resume_ext_db_manager {
 		ENGINE = InnoDB;";
 	/**#@-*/
 
+	/**#@+
+	 * select data
+	 *
+	 * the data returned from these queries is suitable for passing to
+	 * format_entry_xhtml.
+	 */
+	// first param is resume
+	// second param is vcard
+	// third param is vcard_ci
+	// fourth is resume_id
+	const sql_select_general = '
+		select
+			objective as resume_objective,
+			FN as resume_name,
+			LABEL as resume_address,
+			EMAIL as resume_email,
+			URL as resume_website
+		from %s
+		left join %s
+			using (vcard_id)
+		left join %s
+			using (vcard_id)
+		where resume_id = "%d"
+		limit 1';
+
+	// first is skillset
+	// second is skill
+	// third is resume_id
+	const sql_select_skills = '
+		select
+			%1$s.name as resume_skillset_name,
+			group_concat(%2$s.name SEPARATOR ", ") as resume_skillset_list
+		from %1$s
+		left join %2$s
+			using (skillset_id)
+		where resume_id = "%3$d"
+		group by %1$s.skillset_id';
+
+	// first param is employment_history
+	// second param is vevent
+	// third is resume_id
+	const sql_select_employment = '
+		select
+			employment_history_id,
+			employer as resume_employer,
+			title as resume_job_title,
+			DTSTART as resume_start_employ,
+			DTEND as resume_end_employ,
+			status as resume_currently_employ,
+			DESCRIPTION as resume_job_desc
+		from %1$s
+		left join %2$s
+			using (vevent_id)
+		where resume_id = "%3$d"';
+
+	// first is projects
+	// second is employment_history_id
+	const sql_select_projects = '
+		select
+			name as resume_project_name,
+			description as resume_project_desc
+		from %1$s
+		where employment_history_id = "%2$d"';
+
+	// first param is education
+	// second param is vevent
+	// third is resume_id
+	const sql_select_education = '
+		select
+			institution as resume_institution,
+			major as resume_major,
+			minor as resume_minor,
+			level as resume_degree,
+			DTEND as resume_date_graduated,
+			enrolled as resume_currently_enrolled
+		from %1$s
+		left join %2$s
+			using (vevent_id)
+		where resume_id = "%3$d"';
+
+	// first param is awards
+	// second param is vevent
+	// third is resume_id
+	const sql_select_awards = '
+		select
+			SUMMARY as resume_award_title,
+			DTSTART as resume_award_date,
+			DESCRIPTION as resume_award_desc
+		from %1$s
+		left join %2$s
+			using (vevent_id)
+		where resume_id = "%3$d"';
+	/**#@-*/
 };
 ?>

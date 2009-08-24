@@ -5,7 +5,7 @@ require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
 class resume_ext_general extends resume_ext_section {
 	protected $title = "General Info";
-	protected $cta = "Add Resume";
+	protected $cta = "Add R&eacute;sum&eacute;";
 	protected $id = 'general';
 
 	protected $filters = Array(
@@ -19,7 +19,7 @@ class resume_ext_general extends resume_ext_section {
 	public function format_wp_form($prev, $next) {
 		$this->format_start_form() ?>
 		<div class="control_box">
-			<label for="resume_title" class="form_label">Resume Title<span class="desc"> &middot; A short description</span</label>
+			<label for="resume_title" class="form_label">R&eacute;sum&eacute; Title<span class="desc"> &middot; A short description</span</label>
 			<input name="resume_title" id="resume_title" class="form_text" type="text" />
 		</div>
 
@@ -104,6 +104,28 @@ class resume_ext_general extends resume_ext_section {
 		resume_ext_db_manager::$id_resume = $wpdb->insert_id;
 	}
 
+	public function select_db($resume_id) {
+		global $wpdb;
+
+		$resume = resume_ext_db_manager::make_name(resume_ext_db_manager::name_resume);
+		$vcard = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vcard);
+		$vcard_ci= resume_ext_db_manager::make_name(resume_ext_db_manager::name_vcard_ci);
+
+		$query = sprintf(
+				resume_ext_db_manager::sql_select_general,
+				$resume,
+				$vcard,
+				$vcard_ci,
+				$resume_id);
+
+		//echo $query;
+
+		return $wpdb->get_row(
+			$query,
+			ARRAY_A
+		);
+	}
+
 	/**
 	 * Update the last resume with its page id
 	 *
@@ -131,12 +153,16 @@ class resume_ext_general extends resume_ext_section {
 
 	public function format_entry_xhtml($val, $key) {}
 
-	public function format_wp_xhtml() {
-		return "<h2>" . $_SESSION['resume'][$this->id]['resume_name'] . "</h2>"
-		. "<address>" . nl2br($_SESSION['resume'][$this->id]['resume_address']) . "</address>"
-		. "<a href=\"mailto:" . $_SESSION['resume'][$this->id]['resume_email'] . "\">" . $_SESSION['resume'][$this->id]['resume_email'] . "</a><br />"
-		. "<a href=\"" . $_SESSION['resume'][$this->id]['resume_website'] . "\">" . $_SESSION['resume'][$this->id]['resume_website'] . "</a>"
-		. '<div id="resume_ext_objective">' . $_SESSION['resume'][$this->id]['resume_objective'] . "</div>";
+	public function format_wp_xhtml($resume_id, $data) {
+
+		if(!$data) {
+			$data = $this->select_db($resume_id);
+		}
+		return "<h2>" . $data['resume_name'] . "</h2>"
+		. "<address>" . nl2br($data['resume_address']) . "</address>"
+		. "<a href=\"mailto:" . $data['resume_email'] . "\">" . $data['resume_email'] . "</a><br />"
+		. "<a href=\"" . $data['resume_website'] . "\">" . $data['resume_website'] . "</a>"
+		. '<div id="resume_ext_objective">' . $data['resume_objective'] . "</div>";
 	}
 
 	public function add_data() {

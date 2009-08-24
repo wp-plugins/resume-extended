@@ -8,6 +8,8 @@ class resume_ext_projects extends resume_ext_section {
 	protected $cta = "Add Project";
 	protected $id = 'projects';
 
+	protected $nest_level = 1;
+
 	protected $wp_action = "resume_new_project";
 	protected $employer_idx = "resume_new_project";
 
@@ -50,18 +52,36 @@ class resume_ext_projects extends resume_ext_section {
 		if(isset($_SESSION['resume'][$this->id])) {
 			foreach($_SESSION['resume'][$this->id] as $key => $employment) {
 
-				// insert the emplyment history record
+				// insert the project record
 				$wpdb->insert(
-					resume_ext_db_manager::make_name(resume_ext_db_manager::name_eh),
+					resume_ext_db_manager::make_name(resume_ext_db_manager::name_projects),
 					array(
 						'employment_history_id' => resume_ext_db_manager::$id_eh,
 						'name' => $employment['resume_project_name'],
 						'description' => $employment['resume_project_desc']
 					));
-				resume_ext_db_manager::$id_eh = $wpdb->insert_id;
+				resume_ext_db_manager::$id_projects = $wpdb->insert_id;
 
 			}
 		}
+	}
+
+	public function select_db($resume_id) {
+		global $wpdb;
+
+		$projects = resume_ext_db_manager::make_name(resume_ext_db_manager::name_projects);
+
+		$query = sprintf(
+				resume_ext_db_manager::sql_select_projects,
+				$projects,
+				$resume_id);
+
+		//echo $query;
+
+		return $wpdb->get_results(
+			$query,
+			ARRAY_A
+		);
 	}
 
 	public function format_entry_xhtml($val, $key) {

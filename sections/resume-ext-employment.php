@@ -82,7 +82,7 @@ class resume_ext_employment extends resume_ext_section {
 					resume_ext_db_manager::make_name(resume_ext_db_manager::name_vevent),
 					array(
 						'DTSTART' => strftime("%F", strtotime($employment['resume_start_employ'])),
-						'DTEND' => strftime("%F", strtotime($employment['resume_currently_employ'])),
+						'DTEND' => strftime("%F", strtotime($employment['resume_end_employ'])),
 						'DESCRIPTION' => $employment['resume_job_desc']
 					));
 				resume_ext_db_manager::$id_vevent = $wpdb->insert_id;
@@ -106,8 +106,28 @@ class resume_ext_employment extends resume_ext_section {
 
 	}
 
+	public function select_db($resume_id) {
+		global $wpdb;
+
+		$vevent = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vevent);
+		$eh = resume_ext_db_manager::make_name(resume_ext_db_manager::name_eh);
+
+		$query = sprintf(
+				resume_ext_db_manager::sql_select_employment,
+				$eh,
+				$vevent,
+				$resume_id );
+
+		//echo $query;
+
+		return $wpdb->get_results(
+			$query,
+			ARRAY_A
+		);
+	}
+
 	public function format_wp_admin_xhtml() {
-		$output = "<h3>" . $this->title . "</h3>" . "<dl>";
+		$output = "<h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . $this->title . "</h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . "<ul>";
 
 		session_start();
 
@@ -129,24 +149,27 @@ class resume_ext_employment extends resume_ext_section {
 			}
 		}
 
-		return $output . "</dl>";
+		return $output . "</ul>";
 	}
 
-	public function format_wp_xhtml() {
-		$output = "<h3>" . $this->title . "</h3>" . "<dl>";
+	public function format_wp_xhtml($resume_id, $data) {
+		$output = "<h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . $this->title . "</h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . "<ul>";
 
-		session_start();
-
-		if($_SESSION['resume'][$this->id]) {
-			foreach($_SESSION['resume'][$this->id] as $key => $val) {
-				$project = new resume_ext_projects($key);
-
-				$output .= $this->format_entry_xhtml($val, $key) . $project->format_wp_xhtml();
-
-			}
+		if(!$data && !is_array($data)) {
+			$data = $this->select_db($resume_id);
 		}
 
-		return $output . "</dl>";
+		foreach($data as $key => $val) {
+			$project = new resume_ext_projects($key);
+
+			$output .= $this->format_entry_xhtml($val, $key);
+			//if(isset($_SESSION['resume'][$project->get_id()])) {
+				$output .= $project->format_wp_xhtml($val['employment_history_id'], NULL);
+			//}
+
+		}
+
+		return $output . "</ul>";
 	}
 
 	public function format_entry_xhtml($val, $key) {

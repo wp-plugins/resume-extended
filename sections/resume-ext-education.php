@@ -59,7 +59,7 @@ class resume_ext_education extends resume_ext_section {
 		$resume = resume_ext_db_manager::make_name(resume_ext_db_manager::name_resume);
 		$vevent = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vevent);
 
-		maybe_create_table($degree, sprintf(resume_ext_db_manager::sql_awards, $degree, $resume, $vevent));
+		maybe_create_table($degree, sprintf(resume_ext_db_manager::sql_degree, $degree, $resume, $vevent));
 	}
 
 	public function insert_db() {
@@ -72,7 +72,7 @@ class resume_ext_education extends resume_ext_section {
 				$wpdb->insert(
 					resume_ext_db_manager::make_name(resume_ext_db_manager::name_vevent),
 					array(
-						'DTEND' => strftime("%F", strtotime($edu['resume_start_employ'])),
+						'DTEND' => strftime("%F", strtotime($edu['resume_date_graduated'])),
 					));
 				resume_ext_db_manager::$id_vevent = $wpdb->insert_id;
 
@@ -91,6 +91,26 @@ class resume_ext_education extends resume_ext_section {
 			}
 
 		}
+	}
+
+	public function select_db($resume_id) {
+		global $wpdb;
+
+		$degree = resume_ext_db_manager::make_name(resume_ext_db_manager::name_degree);
+		$vevent = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vevent);
+
+		$query = sprintf(
+				resume_ext_db_manager::sql_select_education,
+				$degree,
+				$vevent,
+				$resume_id);
+
+		//echo $query;
+
+		return $wpdb->get_results(
+			$query,
+			ARRAY_A
+		);
 	}
 
 	public function format_entry_xhtml($val, $key) {

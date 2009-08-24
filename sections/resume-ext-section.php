@@ -4,6 +4,8 @@ abstract class resume_ext_section {
 	protected $cta = "Add Generic";
 	protected $id = 'generic';
 
+	protected $nest_level = 0;
+
 	protected $wp_action = "resume_new";
 
 	protected $index = 0;
@@ -14,8 +16,8 @@ abstract class resume_ext_section {
 	}
 
 	protected function format_dl_item($strong, $title, $desc)  {
-		return "<dt class=\"part_title\"> " . (($strong)? "<strong>" . $strong . "</strong> ": "") . $title . "</dt>"
-			. "<dd class=\"part_desc\">" . $desc . "</dd>";
+		return '<li><div class="part_title" style="width:100%">' . (($strong)? "<strong>" . $strong . "</strong> ": "") . $title . "</div>"
+			. '<div class="part_desc" style="width:100%">' . $desc . "</div></li>";
 	}
 
 	protected function format_start_form() {
@@ -64,25 +66,27 @@ abstract class resume_ext_section {
 
 	abstract public function create_db();
 	abstract public function insert_db();
+	abstract public function select_db($resume_id);
 	abstract public function format_entry_xhtml($val, $key);
 	abstract public function format_wp_form($prev, $next);
 
-	public function format_wp_xhtml() {
-		$output = "<h3>" . $this->title . "</h3>" . "<dl>";
+	public function format_wp_xhtml($resume_id, $data) {
+		$output = "<h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . $this->title . "</h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . "<ul>";
 
-		session_start();
-
-		if($_SESSION['resume'][$this->id]) {
-			foreach($_SESSION['resume'][$this->id] as $key => $val) {
-				$output .= $this->format_entry_xhtml($val, $key);
-			}
+		if(!$data && !is_array($data)) {
+			$data = $this->select_db($resume_id);
 		}
 
-		return $output . "</dl>";
+		foreach($data as $key => $val) {
+			$output .= $this->format_entry_xhtml($val, $key);
+		}
+
+		return $output . "</ul>";
 	}
 
 	public function format_wp_admin_xhtml() {
-		return $this->format_wp_xhtml();
+		session_start();
+		return $this->format_wp_xhtml(NULL, $_SESSION['resume'][$this->id]);
 	}
 
 	public function add_data() {

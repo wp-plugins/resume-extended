@@ -11,7 +11,7 @@ class resume_ext_finish extends resume_ext_section {
 		global $resume_ajax;
 ?>
 	<p>
-	If you&rsquo;re finished, go ahead and create your r&eacute;sum&eacute;.  It will save it to the worpress database and make a draft.  To publish it to your blog, go to Pages &rsaquo; Edit and select you r&eacute;sum&eacute; and click publish.
+	If you&rsquo;re finished, go ahead and create your r&eacute;sum&eacute;.  It will save it to the worpress database and make a draft.  To publish it to your blog, go to Pages &rsaquo; Edit and select your r&eacute;sum&eacute; and click publish.
 	</p>
 
 	<form action="<?= $resume_ajax ?>" method="POST" id="resume_submit">
@@ -37,6 +37,7 @@ class resume_ext_finish extends resume_ext_section {
 
 	public function create_db() {}
 	public function insert_db() {}
+	public function select_db($resume_id) { return Array();}
 
 	public function format_entry_xhtml($val, $key) {
 		return "";

@@ -43,7 +43,7 @@ class resume_ext_awards extends resume_ext_section {
 		global $wpdb;
 
 		if(isset($_SESSION['resume'][$this->id])) {
-			foreach($_SESSION['resume'][$this->id] as $key => $employment) {
+			foreach($_SESSION['resume'][$this->id] as $key => $award) {
 				// insert the vevent
 				$wpdb->insert(
 					resume_ext_db_manager::make_name(resume_ext_db_manager::name_vevent),
@@ -72,6 +72,26 @@ class resume_ext_awards extends resume_ext_section {
 		$vevent = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vevent);
 
 		maybe_create_table($awards, sprintf(resume_ext_db_manager::sql_awards, $awards, $resume, $vevent));
+	}
+
+	public function select_db($resume_id) {
+		global $wpdb;
+
+		$awards = resume_ext_db_manager::make_name(resume_ext_db_manager::name_awards);
+		$vevent = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vevent);
+
+		$query = sprintf(
+				resume_ext_db_manager::sql_select_awards,
+				$awards,
+				$vevent,
+				$resume_id);
+
+		echo $query;
+
+		return $wpdb->get_results(
+			$query,
+			ARRAY_A
+		);
 	}
 
 	public function format_entry_xhtml($val, $key) {

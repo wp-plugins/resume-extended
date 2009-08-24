@@ -1,6 +1,6 @@
 === Resume Extended ===
 Contributors: AaronAsAChimp
-Tags: resume, page, pages
+Tags: resume, employment, page, pages
 Requires at least: 2.8
 Tested up to: 2.8
 Stable tag: 0.1
@@ -30,7 +30,7 @@ Create a resume easily, and allow employers to view it on your blog.
 	* Projects **(DONE: v0.2)**
 	* References
 * Export to:
-	* PDF
+	* PDF **(PLANNED: v0.3)**
 	* Microsoft Word .doc and .docx
 	* Text
 	* enhanced XHTML **(PLANNED: v0.3)**
@@ -46,6 +46,12 @@ Create a resume easily, and allow employers to view it on your blog.
 
 == Installation ==
 
+= Requirements =
+* PHP 5.2 and later
+* MySQL 5 and later
+* Wordpress 2.8 and later
+
+= Install it! =
 1. Upload `resume-extended` to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Create a new resume under 'Resume' section

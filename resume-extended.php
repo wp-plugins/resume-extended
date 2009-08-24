@@ -40,6 +40,8 @@ define("RESUME_EXT_PATH", WP_CONTENT_URL.'/plugins/'.plugin_basename(dirname(__F
 define("RESUME_EXT_ADMIN_PATH", get_bloginfo('wpurl') . "/wp-admin/");
 define("RESUME_EXT_AJAX_PATH", RESUME_EXT_ADMIN_PATH . "admin-ajax.php");
 
+define("RESUME_EXT_NEST_OFFSET", 3);
+
 global $resume_path;
 global $resume_ajax;
 global $resume_sections;
@@ -66,6 +68,7 @@ $resume_sections = Array(
 );
 
 add_filter('admin_menu', 'resume_menu');
+add_filter('the_content', 'resume_ext_content');
 
 add_action('admin_print_styles', 'resume_admin_styles');
 add_action('admin_print_scripts', 'resume_admin_scripts');
@@ -111,10 +114,29 @@ function resume_admin_scripts () {
 	}
 }
 
+function resume_ext_content($content) {
+	$regex = "/\[resume-ext id=\"(\d+)\"]/";
+	//$regex = "/resume-ext/";
+	$content = preg_replace_callback($regex, 'resume_ext_make_body', $content);
+
+	return $content;
+}
+
+function resume_ext_make_body($matches) {
+	global $resume_sections;
+	$body = "";
+
+	foreach($resume_sections as $sect) {
+		$body .= $sect->format_wp_xhtml($matches[1], NULL);
+	}
+
+	return $body;
+}
+
 function resume_menu()  {
 
-	add_menu_page('New R&eacute;sum&eacute;', 'R&eacute;sum&eacute;', 8, 'resume_new_page', 'resume_new_page');
-	add_submenu_page('resume_new_page', 'New R&eacute;sum&eacute;', 'New R&eacute;sum&eacute;', 8, 'resume_new_page', 'resume_new_page');
+	add_menu_page('Add New', 'R&eacute;sum&eacute; Ext.', 8, 'resume_new_page', 'resume_new_page');
+	add_submenu_page('resume_new_page', 'Add New', 'Add New', 8, 'resume_new_page', 'resume_new_page');
 
 	//add_options_page('Resume Options', 'Resume', 8, 'resumeoptions', 'resume_options');
 }
@@ -157,7 +179,7 @@ function resume_new_page() {
 	</div>
 <?
 }
-/*
+/**/
 function resume_error($errno, $errstr, $errfile, $errline, $errcontext) {
 	$errortype = array (
 			E_ERROR              => 'Error',
@@ -185,7 +207,7 @@ function resume_db_error($str, $query) {
 	FB::error($errstr, "WP DB Error");
 	FB::trace("WP DB Error");
 }
-*/
+
 function resume_ext_install() {
 	global $wpdb;
 	global $resume_sections;
@@ -258,7 +280,7 @@ function resume_finalize() {
 		'%s',
 		'%s',
 		'page',
-		'draft'
+		'static'
 	)";
 
 	$body = "";
@@ -266,9 +288,10 @@ function resume_finalize() {
 
 	foreach($resume_sections as $sect) {
 		$sect->insert_db();
-		$body .= $sect->format_wp_xhtml();
+		//$body .= $sect->format_wp_xhtml();
 		if(is_a($sect, 'resume_ext_general')) {
 			$page_title = $_SESSION['resume'][$sect->get_id()]['resume_title'];
+			$body = '[resume-ext id="' . resume_ext_db_manager::$id_resume . '"]';
 		}
 	}
 

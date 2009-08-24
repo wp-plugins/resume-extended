@@ -77,6 +77,26 @@ class resume_ext_skills extends resume_ext_section {
 
 	}
 
+	public function select_db($resume_id) {
+		global $wpdb;
+
+		$skillset = resume_ext_db_manager::make_name(resume_ext_db_manager::name_skillset);
+		$skill = resume_ext_db_manager::make_name(resume_ext_db_manager::name_skill);
+
+		$query = sprintf(
+				resume_ext_db_manager::sql_select_skills,
+				$skillset,
+				$skill,
+				$resume_id);
+
+		//echo $query;
+
+		return $wpdb->get_results(
+			$query,
+			ARRAY_A
+		);
+	}
+
 	public function format_entry_xhtml($val, $key) {
 		return $this->format_dl_item(NULL, $val['resume_skillset_name'], $val['resume_skillset_list'] );
 	}

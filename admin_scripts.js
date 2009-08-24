@@ -1,4 +1,6 @@
 (function($) {
+	var disables = [];
+
 	$(document).ready(function() {
 
 		// do the inline labels
@@ -49,9 +51,19 @@
 				target: "#" + this.id + "_target",
 				resetForm: true,
 				success: function(arg) {
-					//console.log(arg);
+					//console.log(this);
 					//$("#" + this.id + "_target").fadeIn('slow');
 					$(".sub_form form").each(funk);
+
+					//temp = $(form_closure);
+					//temp.resetForm();
+
+					// hack remove asap
+					$(".inline_label_inactive").focus().blur();
+					$(".inline_label_active").focus().blur();
+					$.each(disables, function () {
+						check_check_disabler(this.a, this.b);
+					});
 				}
 			};
 
@@ -74,20 +86,33 @@
 
 		$("#resume_reset").ajaxForm(function () {
 			$(".sub_form form").resetForm();
+			// hack remove asap
+			$(".inline_label_inactive").focus().blur();
+			$(".inline_label_active").focus().blur();
+			$.each(disables, function () {
+				check_check_disabler(this.a, this.b);
+			});
 		});
 
 	});
 
-	jQuery.fn.check_disables = function ( check_disables ) {
+	$.fn.check_disables = function ( check_disables ) {
 		//console.debug(this, $(this));
 		return this.each(function () {
+			disables.push({a:this, b:check_disables});
+
 			$(this).change(function () {
-				if($(this).is("input:checked")) {
-					$(check_disables).attr("disabled", "disabled");
-				} else {
-					$(check_disables).removeAttr("disabled");
-				}
+				check_check_disabler(this, check_disables);
 			});
 		});
 	};
+
+	function check_check_disabler(ele, check_disables) {
+		if($(ele).is("input:checked")) {
+			$(check_disables).attr("disabled", "disabled");
+		} else {
+			$(check_disables).removeAttr("disabled");
+		}
+	}
+
 })(jQuery);
