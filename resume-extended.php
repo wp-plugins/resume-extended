@@ -20,18 +20,18 @@
 Plugin Name: Resume Extended
 Plugin URI: http://sachimp/
 Description: Create and manage your Resume all from your blog.
-Version: 0.2.1
+Version: 0.2.2
 Author: Aaron Spaulding
 Author URI: http://sachimp.com/
 */
 
 /**
- * Version 0.2.1
+ * Version 0.2.2
  */
 define("RESUME_EXTENDED_NAME", "resume_ext_");
 define("RESUME_EXTENDED_VERSION", 2);
-define("RESUME_EXTENDED_VERSION_MINOR", 1);
-define("RESUME_EXTENDED_VERSION_PRETTY", "0.2.1");
+define("RESUME_EXTENDED_VERSION_MINOR", 2);
+define("RESUME_EXTENDED_VERSION_PRETTY", "0.2.2");
 
 /**
  * Determine the location
