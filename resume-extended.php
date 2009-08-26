@@ -20,17 +20,18 @@
 Plugin Name: Resume Extended
 Plugin URI: http://sachimp/
 Description: Create and manage your Resume all from your blog.
-Version: 0.2
+Version: 0.2.1
 Author: Aaron Spaulding
 Author URI: http://sachimp.com/
 */
 
 /**
- * Version 0.2
+ * Version 0.2.1
  */
 define("RESUME_EXTENDED_NAME", "resume_ext_");
 define("RESUME_EXTENDED_VERSION", 2);
-define("RESUME_EXTENDED_VERSION_PRETTY", "0.2.0");
+define("RESUME_EXTENDED_VERSION_MINOR", 1);
+define("RESUME_EXTENDED_VERSION_PRETTY", "0.2.1");
 
 /**
  * Determine the location
@@ -205,7 +206,7 @@ function resume_new_page() {
 	</div>
 <?
 }
-/**/
+/*
 function resume_error($errno, $errstr, $errfile, $errline, $errcontext) {
 	$errortype = array (
 			E_ERROR              => 'Error',
@@ -242,7 +243,7 @@ function resume_db_error($str, $query) {
 //   see bug: #10536
 set_error_handler(resume_error);
 $wpdb->hook_error('resume_db_error');
-$wpdb->show_errors();
+$wpdb->show_errors();*/
 
 function resume_ext_install() {
 	global $wpdb;

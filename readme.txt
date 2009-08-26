@@ -80,6 +80,9 @@ Look, i'm just trying to help.
 
 == Changelog ==
 
+= 0.2.1 =
+* removed debugging code
+
 = 0.2 =
 * added projects to Employment History.
 * store data in database for later functionality.
