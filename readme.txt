@@ -3,7 +3,7 @@ Contributors: AaronAsAChimp
 Tags: resume, employment, jobs, page, pages
 Requires at least: 2.8
 Tested up to: 2.8
-Stable tag: 0.2.1
+Stable tag: 0.2.2
 
 Create and maintain your resume from within wordpress.
 
@@ -79,6 +79,8 @@ Look, i'm just trying to help.
 2. Spiff up your employment history, no matter how bizarre.
 
 == Changelog ==
+= 0.2.2 = 
+* fixed display error in admin panel
 
 = 0.2.1 =
 * removed debugging code
