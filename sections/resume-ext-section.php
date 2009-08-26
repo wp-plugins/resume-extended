@@ -75,20 +75,19 @@ abstract class resume_ext_section {
 
 	public function format_wp_xhtml($resume_id, $data) {
 		if($this->has_entries($resume_id)) {
-			$output = "<h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . $this->title . "</h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . "<ul>";
+			$data = $this->select_db($resume_id);
+		} else if (!$data && !is_array($data)) {
+			return "";
+		}
+		
+		$output = "<h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . $this->title . "</h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . "<ul>";
 
-			if(!$data && !is_array($data)) {
-				$data = $this->select_db($resume_id);
-			}
-
-			foreach($data as $key => $val) {
-				$output .= $this->format_entry_xhtml($val, $key);
-			}
-
-			return $output . "</ul>";
+		foreach($data as $key => $val) {
+			$output .= $this->format_entry_xhtml($val, $key);
 		}
 
-		return "";
+		return $output . "</ul>";
+
 	}
 
 	public function format_wp_admin_xhtml() {
