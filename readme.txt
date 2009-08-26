@@ -3,7 +3,7 @@ Contributors: AaronAsAChimp
 Tags: resume, employment, jobs, page, pages
 Requires at least: 2.8
 Tested up to: 2.8
-Stable tag: 0.2
+Stable tag: 0.2.1
 
 Create and maintain your resume from within wordpress.
 
