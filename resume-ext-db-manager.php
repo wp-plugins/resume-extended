@@ -372,5 +372,22 @@ class resume_ext_db_manager {
 			using (vevent_id)
 		where resume_id = "%3$d"';
 	/**#@-*/
+	
+	/**#@+
+	 * resume editing queries
+	 *
+	 * These queries are useful the resume editing feature 
+	 */
+	const sql_select_resumes = '
+		select
+			resume_id,
+			%1$s.title,
+			FN as formatted_name,
+			last_update
+		from %1$s
+		left join %2$s
+			using (vcard_id)
+	';
+	/**#@-*/
 };
 ?>

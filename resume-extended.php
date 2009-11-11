@@ -163,9 +163,10 @@ function resume_ext_make_body($matches) {
 
 function resume_menu()  {
 
-	add_menu_page('Add New', 'R&eacute;sum&eacute; Ext.', 8, 'resume_new_page', 'resume_new_page');
-	add_submenu_page('resume_new_page', 'Add New', 'Add New', 8, 'resume_new_page', 'resume_new_page');
-
+	add_menu_page('Add New', 'R&eacute;sum&eacute; Ext.', 8, 'resume_edit_listing', 'resume_edit_listing');
+	
+	add_submenu_page('resume_edit_listing', 'Edit', 'Edit', 8, 'resume_edit_listing', 'resume_edit_listing');
+	add_submenu_page('resume_edit_listing', 'Add New', 'Add New', 8, 'resume_new_page', 'resume_new_page');
 	//add_options_page('Resume Options', 'Resume', 8, 'resumeoptions', 'resume_options');
 }
 
@@ -206,6 +207,49 @@ function resume_new_page() {
 	</div>
 	</div>
 <?
+}
+
+	/**
+	 * Update the last resume with its page id
+	 *
+	 * This function will not work correctly across page reloads.
+	 *
+	 * @since 0.2
+	 * @param $page_id int the id of the page that was just created
+	 *
+	 */
+
+function resume_edit_listing() {
+	global $wpdb;
+	$resume = resume_ext_db_manager::make_name(resume_ext_db_manager::name_resume);
+	$vcard = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vcard);
+	$r_query = sprintf(resume_ext_db_manager::sql_select_resumes, $resume, $vcard);
+	$r_list = $wpdb->get_results($r_query);
+	
+	//var_dump($r_query);
+?>
+<div class="wrap">
+	<h2>Edit R&eacute;sum&eacute;s</h2>
+	<table class="widefat post fixed">
+		<thead>
+			<tr>
+				<th>Title</th>
+				<th>Name</th>
+				<th>Last Updated</th>
+			</tr>
+		</thead>
+		<tbody><?php
+	foreach($r_list as $r) {
+		?><tr>
+			<td><?php echo $r->title ?></td>
+			<td><?php echo $r->formatted_name ?></td>
+			<td><?php echo $r->last_update ?></td>
+		</tr><?php
+	}	?>
+		</tbody>
+	</table>
+</div>
+<?php
 }
 /*
 function resume_error($errno, $errstr, $errfile, $errline, $errcontext) {
