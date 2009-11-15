@@ -38,7 +38,7 @@ implements resume_ext_exportable {
 		<textarea name="resume_award_desc" id="resume_award_desc" class="form_textarea"></textarea>
 
 		</div>
-		<?
+		<?php
 
 		$this->format_end_form($prev, $next);
 	}

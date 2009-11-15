@@ -36,7 +36,7 @@ implements resume_ext_exportable {
 		<textarea name="resume_skillset_list" id="resume_skillset_list" class="form_textarea"></textarea>
 
 		</div>
-		<?
+		<?php
 
 		$this->format_end_form($prev, $next);
 	}

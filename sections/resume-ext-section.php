@@ -26,45 +26,45 @@ abstract class resume_ext_section {
 	protected function format_start_form() {
 		global $resume_ajax; ?>
 		<div class="sub_form">
-		<div id="resume_<?= $this->id ?>_target" class="preview_target">
+		<div id="resume_<?php echo $this->id ?>_target" class="preview_target">
 		</div>
-		<form action="<?= $resume_ajax ?>" method="post" id="resume_<?= $this->id ?>">
-			<input type="hidden" name="action" value="<?= $this->wp_action ?>" />
-			<input type="hidden" name="sub_action" value="<?= $this->index ?>" />
-<?
+		<form action="<?php echo $resume_ajax ?>" method="post" id="resume_<?php echo $this->id ?>">
+			<input type="hidden" name="action" value="<?php echo $this->wp_action ?>" />
+			<input type="hidden" name="sub_action" value="<?php echo $this->index ?>" />
+<?php
 	}
 
 	protected function format_end_form($prev, $next) {?>
 		<script type="text/javascript">(function($) {
 			$(document).ready(function () {
-		<? if($next) { ?>
-				$("#next_page_<?= $next->get_id() ?>").click(function() {
-					$("#tabs").tabs('select', '#tab-<?= $next->get_id() ?>');
+		<?php if($next) { ?>
+				$("#next_page_<?php echo $next->get_id() ?>").click(function() {
+					$("#tabs").tabs('select', '#tab-<?php echo $next->get_id() ?>');
 				});
-		<? }
+		<?php }
 
 		if($prev) { ?>
-				$("#prev_page_<?= $prev->get_id() ?>").click(function() {
-					$("#tabs").tabs('select', '#tab-<?= $prev->get_id() ?>');
+				$("#prev_page_<?php echo $prev->get_id() ?>").click(function() {
+					$("#tabs").tabs('select', '#tab-<?php echo $prev->get_id() ?>');
 				});
-		<? } ?>
+		<?php } ?>
 			});
 
 			})(jQuery);</script>
 			<p class="submit">
-		<? if($prev) { ?>
-				<input type="button" id="prev_page_<?= $prev->get_id() ?>" value="&laquo;"/>
-		<? } ?>
-				<input type="submit" id="ajax_action" value="<?= $this->cta ?>" />
+		<?php if($prev) { ?>
+				<input type="button" id="prev_page_<?php echo $prev->get_id() ?>" value="&laquo;"/>
+		<?php } ?>
+				<input type="submit" id="ajax_action" value="<?php echo $this->cta ?>" />
 
-		<? if($next) { ?>
-				<input type="button" id="next_page_<?= $next->get_id() ?>" class="button-primary" value="<?= $next->get_title() ?> &raquo;"/>
-		<? } ?>
+		<?php if($next) { ?>
+				<input type="button" id="next_page_<?php echo $next->get_id() ?>" class="button-primary" value="<?php echo $next->get_title() ?> &raquo;"/>
+		<?php } ?>
 			</p>
 		</form>
 
 		</div>
-<?
+<?php
 	}
 
 	abstract public function create_db();

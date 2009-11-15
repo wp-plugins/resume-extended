@@ -199,7 +199,7 @@ function resume_menu()  {
 <div class="wrap">
 	<h2>Resume Options</h2>
 </div>
-<? }*/
+<?php }*/
 
 function resume_new_page() {
 	global $resume_sections;
@@ -214,25 +214,25 @@ function resume_new_page() {
 	<div id="tabs">
 
 	<ul class="tab_labels">
-<?
+<?php
 	foreach($resume_sections as $sect) {
 ?>
-		<li><a href="#tab-<?= $sect->get_id() ?>"><?= $sect->get_title() ?></a></li>
-<?
+		<li><a href="#tab-<?php echo $sect->get_id() ?>"><?php echo $sect->get_title() ?></a></li>
+<?php
 	}
-?>	</ul><?
+?>	</ul><?php
 
 	foreach($resume_sections as $i => $sect) {
 		//var_dump($sect);
-?>		<div id="tab-<?= $sect->get_id() ?>"> <?
+?>		<div id="tab-<?php echo $sect->get_id() ?>"> <?php
 		$sect->format_wp_form($resume_sections[$i - 1], $resume_sections[$i + 1]);
-?>		</div><?
+?>		</div><?php
 	}
 ?>
 
 	</div>
 	</div>
-<?
+<?php
 }
 
 /**
@@ -267,7 +267,7 @@ function resume_export_page() {
 		<form>
 		<input type="hidden" value="resume_export_page" name="page" />
 		<select name="resume_id">
-<?
+<?php
 		foreach($resume_sections[0]->get_resumes() as $format) {
 			echo '<option value="' . $format['resume_id'] . '">' . $format['title'] . "</option>";
 		}
@@ -275,7 +275,7 @@ function resume_export_page() {
 		</select>
 		
 		<select name="format">
-<?
+<?php
 		foreach($export->list_formats() as $key => $format) {
 			echo '<option value="' . $key . '">' . $format . "</option>";
 		}
@@ -284,7 +284,7 @@ function resume_export_page() {
 		<input type="submit" value="Export" class="button-primary" />
 		</form>
 		</div>
-<?
+<?php
 	}
 }
 

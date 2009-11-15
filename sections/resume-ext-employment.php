@@ -60,7 +60,7 @@ implements resume_ext_exportable {
 
 
 		</div>
-		<? $this->format_end_form($prev, $next);
+		<?php $this->format_end_form($prev, $next);
 	}
 
 	public function create_db() {

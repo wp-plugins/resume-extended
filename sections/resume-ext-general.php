@@ -56,7 +56,7 @@ implements resume_ext_exportable {
 
 		</div>
 
-		<?
+		<?php
 		$this->format_end_form($prev, $next);
 	}
 

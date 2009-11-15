@@ -54,7 +54,7 @@ implements resume_ext_exportable {
 			<label for="resume_currently_enrolled">Currently Enrolled</label>
 		</div>
 
-		<?
+		<?php
 		$this->format_end_form($prev, $next);
 	}
 

@@ -79,6 +79,9 @@ Look, i'm just trying to help.
 
 == Changelog ==
 = 0.3.0 (Curry) =
+* added shiny pretty icon
+* added theming
+* fixed all the short php tags
 
 = 0.2.2 = 
 * fixed display error in admin panel
