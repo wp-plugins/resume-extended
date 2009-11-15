@@ -2,7 +2,9 @@
 
 require_once('resume-ext-section.php');
 
-class resume_ext_awards extends resume_ext_section {
+class resume_ext_awards 
+extends resume_ext_section 
+implements resume_ext_exportable {
 
 	protected $title = "Awards";
 	protected $cta = "Add Award";

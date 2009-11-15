@@ -3,7 +3,9 @@
 require_once('resume-ext-section.php');
 require_once('resume-ext-projects.php');
 
-class resume_ext_employment extends resume_ext_section {
+class resume_ext_employment 
+extends resume_ext_section 
+implements resume_ext_exportable {
 	protected $title = "Employment History";
 	protected $cta = "Add Employer";
 	protected $id = 'employment';

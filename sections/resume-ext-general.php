@@ -3,7 +3,9 @@
 require_once('resume-ext-section.php');
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-class resume_ext_general extends resume_ext_section {
+class resume_ext_general 
+extends resume_ext_section 
+implements resume_ext_exportable {
 	protected $title = "General Info";
 	protected $cta = "Add R&eacute;sum&eacute;";
 	protected $id = 'general';

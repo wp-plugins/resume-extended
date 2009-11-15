@@ -2,7 +2,9 @@
 
 require_once('resume-ext-section.php');
 
-class resume_ext_education extends resume_ext_section {
+class resume_ext_education 
+extends resume_ext_section 
+implements resume_ext_exportable {
 	protected $title = "Education";
 	protected $cta = "Add Degree";
 	protected $id = 'education';

@@ -109,6 +109,18 @@ abstract class resume_ext_section {
 	public function get_id() {
 		return $this->id;
 	}
+	
+	/**
+	 * Get the list of resumes stored by the plugin
+	 * 
+	 * @todo move this to its own object
+	 * @since 0.3
+	 * @returns an associative array of resumes. id => title
+	 */
+	public function get_resumes() {
+		global $wpdb;
+		return ($wpdb->get_results("select resume_id, title from " . resume_ext_db_manager::make_name(resume_ext_db_manager::name_resume), ARRAY_A ));
+	}
 
 	public function has_entries($id) {
 		global $wpdb;

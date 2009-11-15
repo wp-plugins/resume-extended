@@ -3,7 +3,9 @@
 require_once('resume-ext-section.php');
 require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-class resume_ext_skills extends resume_ext_section {
+class resume_ext_skills 
+extends resume_ext_section 
+implements resume_ext_exportable {
 
 	protected $title = "Skills";
 	protected $cta = "Add Skillset";

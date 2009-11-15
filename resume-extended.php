@@ -26,7 +26,7 @@ Author URI: http://sachimp.com/
 */
 
 /**
- * Version 0.2.1
+ * Version 0.3.0
  */
 define("RESUME_EXTENDED_NAME", "resume_ext_");
 define("RESUME_EXTENDED_VERSION", 3);
@@ -36,11 +36,17 @@ define("RESUME_EXTENDED_VERSION_CODENAME", "Curry");
 
 /**
  * Determine the location
+ * 
+ * always end paths with a trailing slash
  */
-
 define("RESUME_EXT_PATH", WP_CONTENT_URL.'/plugins/'.plugin_basename(dirname(__FILE__)).'/');
+define("RESUME_EXT_PATH_INTERNAL", WP_PLUGIN_DIR . "/" . plugin_basename(dirname(__FILE__)).'/');
+
 define("RESUME_EXT_ADMIN_PATH", get_bloginfo('wpurl') . "/wp-admin/");
 define("RESUME_EXT_AJAX_PATH", RESUME_EXT_ADMIN_PATH . "admin-ajax.php");
+
+define("RESUME_EXT_EXTERNAL_THEME_PATH", get_template_directory() . "/resume-extended/");
+define("RESUME_EXT_THEME_PATH", RESUME_EXT_PATH_INTERNAL . "export/");
 
 define("RESUME_EXT_NEST_OFFSET", 3);
 
@@ -52,6 +58,8 @@ $resume_path = RESUME_EXT_PATH;
 $resume_ajax = RESUME_EXT_AJAX_PATH;
 
 require_once('resume-ext-db-manager.php');
+require_once('resume-ext-export.php');
+require_once('resume-ext-exportable.php');
 
 include_once('sections/resume-ext-general.php');
 include_once('sections/resume-ext-skills.php');
@@ -69,6 +77,19 @@ $resume_sections = Array(
 	new resume_ext_finish(5)
 );
 
+/**
+ * @todo find some way of combining this with the above,
+ * and still be able know the previous and next item in the array
+ */
+$resume_section_lookup = Array(
+	"general",
+	"skills",
+	"employment",
+	"education",
+	"awards",
+	"finish"
+);
+
 add_filter('admin_menu', 'resume_menu');
 add_filter('the_content', 'resume_ext_content');
 
@@ -81,12 +102,13 @@ function resume_admin_styles () {
 	if(!isset($_GET['page']))
 		return;
 
-	global $resume_path;
+	//global $resume_path;
 
 	switch($_GET['page']) {
 		case 'resume_new_page':
-			wp_enqueue_style('resume_admin_css', $resume_path . "admin_styles.css");
-			wp_enqueue_style('resume_ui_smoothness', $resume_path . "css/smoothness/jquery-ui-1.7.2.custom.css");
+		case 'resume_export_page':
+			wp_enqueue_style('resume_admin_css', RESUME_EXT_PATH . "admin_styles.css");
+			wp_enqueue_style('resume_ui_smoothness', RESUME_EXT_PATH . "css/smoothness/jquery-ui-1.7.2.custom.css");
 			break;
 	}
 }
@@ -96,22 +118,23 @@ function resume_admin_scripts () {
 	if(!isset($_GET['page']))
 		return;
 
-	global $resume_path;
+	//global $resume_path;
 
 	switch($_GET['page']) {
 		case 'resume_new_page':
+		case 'resume_export_page':
 			wp_enqueue_script('jquery');
 			wp_enqueue_script('jquery-ui-core',false,array('jquery'));
 			wp_enqueue_script('jquery-ui-tabs',false,array('jquery', 'jquery-ui-core'));
 			wp_enqueue_script('jquery-form',false,array('jquery'));
 
 			if(!wp_script_is('jquery-ui-datepicker')) { // The jquery datepicker might be eventually included.
-				wp_enqueue_script('jquery-ui-datepicker', $resume_path . "ui.datepicker.js", array('jquery', 'jquery-ui-core'));
+				wp_enqueue_script('jquery-ui-datepicker', RESUME_EXT_PATH  . "ui.datepicker.js", array('jquery', 'jquery-ui-core'));
 			} else {
 				wp_enqueue_script('jquery-ui-datepicker', false, array('jquery', 'jquery-ui-core'));
 			}
 
-			wp_enqueue_script('resume-admin-js', $resume_path . "admin_scripts.js", array('jquery', 'jquery-ui-core', 'jquery-ui-tabs','jquery-ui-datepicker', 'jquery-form'));
+			wp_enqueue_script('resume-admin-js', RESUME_EXT_PATH . "admin_scripts.js", array('jquery', 'jquery-ui-core', 'jquery-ui-tabs','jquery-ui-datepicker', 'jquery-form'));
 			break;
 	}
 }
@@ -163,10 +186,12 @@ function resume_ext_make_body($matches) {
 
 function resume_menu()  {
 
-	add_menu_page('Add New', 'R&eacute;sum&eacute; Ext.', 8, 'resume_edit_listing', 'resume_edit_listing');
+	add_menu_page('Add New', 'R&eacute;sum&eacute; Ext.', 8, 'resume_edit_listing', 'resume_edit_listing', RESUME_EXT_PATH . 'images/resume-ext-icon-small.png');
 	
 	add_submenu_page('resume_edit_listing', 'Edit', 'Edit', 8, 'resume_edit_listing', 'resume_edit_listing');
 	add_submenu_page('resume_edit_listing', 'Add New', 'Add New', 8, 'resume_new_page', 'resume_new_page');
+	add_submenu_page('resume_edit_listing', 'Export', 'Export', 8, 'resume_export_page', 'resume_export_page');
+
 	//add_options_page('Resume Options', 'Resume', 8, 'resumeoptions', 'resume_options');
 }
 
@@ -184,6 +209,7 @@ function resume_new_page() {
 
 ?>
 	<div class="wrap resume_wrap">
+	<div class="icon32"><img src="<?php echo RESUME_EXT_PATH . 'images/resume-ext-icon-large.png' ?>" /></div>
 	<h2>New R&eacute;sum&eacute;</h2>
 	<div id="tabs">
 
@@ -209,13 +235,63 @@ function resume_new_page() {
 <?
 }
 
+/**
+ * export the resume or show the form to do so
+ * 
+ * @since 0.3
+ */
+function resume_export_page() {
+	global $resume_sections;
+	$export = new resume_ext_export();
+	
+	//FIXME: this is definately temporary
+	if(isset($_GET['format'])) {
+		$format_id = filter_input(INPUT_GET, 'format', FILTER_SANITIZE_STRING);
+		$resume_id = filter_input(INPUT_GET, 'resume_id', FILTER_SANITIZE_NUMBER_INT);
+		ob_start();
+			$export->apply_format($format_id, $resume_sections);
+			$data = base64_encode(ob_get_contents());
+		ob_end_clean();
+		
+		$export->get_mime_type($format_id);
+?>
+		<a href="data:<?php echo $export->get_mime_type($format_id) ?>;base64,<?php echo $data ?>">Download</a>
+<?php
+	} else {
+		//var_dump($resume_sections[0]->get_resumes())
+?>
+		<div class="wrap resume-wrap">
+		<div class="icon32"><img src="<?php echo RESUME_EXT_PATH . 'images/resume-ext-icon-large.png' ?>" /></div>
+		<h2>Export</h2>
+		
+		<form>
+		<input type="hidden" value="resume_export_page" name="page" />
+		<select name="resume_id">
+<?
+		foreach($resume_sections[0]->get_resumes() as $format) {
+			echo '<option value="' . $format['resume_id'] . '">' . $format['title'] . "</option>";
+		}
+?>
+		</select>
+		
+		<select name="format">
+<?
+		foreach($export->list_formats() as $key => $format) {
+			echo '<option value="' . $key . '">' . $format . "</option>";
+		}
+?>
+		</select>
+		<input type="submit" value="Export" class="button-primary" />
+		</form>
+		</div>
+<?
+	}
+}
+
 	/**
-	 * Update the last resume with its page id
+	 * The edit listing page
 	 *
-	 * This function will not work correctly across page reloads.
-	 *
-	 * @since 0.2
-	 * @param $page_id int the id of the page that was just created
+	 * @since 0.3
 	 *
 	 */
 

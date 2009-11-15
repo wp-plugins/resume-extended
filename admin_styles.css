@@ -125,6 +125,11 @@ p.desc {
 	padding: inherit;
 }
 
+.resume_wrap .icon32 {
+	background-image: url('images/resume-ext-icon-large.png');
+	background-repeat: no-repeat;
+}
+
 input:disabled {
 	background-image: url('images/cross_hatch.png');
 	color: #dfdfdf;

@@ -13,6 +13,7 @@ class resume_ext_db_manager {
 	 * @static
 	 * @access public
 	 * @param string $name the name of the table to make
+	 * @return string the table name
 	 */
 	public static function make_name($name) {
 		global $wpdb;
@@ -325,8 +326,8 @@ class resume_ext_db_manager {
 			employment_history_id,
 			employer as resume_employer,
 			title as resume_job_title,
-			DTSTART as resume_start_employ,
-			DTEND as resume_end_employ,
+			date_format(DTSTART, "%%M %%D, %%Y") as resume_start_employ,
+			date_format(DTEND, "%%M %%D, %%Y") as resume_end_employ,
 			status as resume_currently_employ,
 			DESCRIPTION as resume_job_desc
 		from %1$s
@@ -352,7 +353,7 @@ class resume_ext_db_manager {
 			major as resume_major,
 			minor as resume_minor,
 			level as resume_degree,
-			DTEND as resume_date_graduated,
+			date_format(DTEND, "%%M %%D, %%Y") as resume_date_graduated,
 			enrolled as resume_currently_enrolled
 		from %1$s
 		left join %2$s
@@ -365,7 +366,7 @@ class resume_ext_db_manager {
 	const sql_select_awards = '
 		select
 			SUMMARY as resume_award_title,
-			DTSTART as resume_award_date,
+			date_format(DTSTART, "%%M %%D, %%Y") as resume_award_date,
 			DESCRIPTION as resume_award_desc
 		from %1$s
 		left join %2$s
