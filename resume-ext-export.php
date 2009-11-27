@@ -12,6 +12,13 @@ class resume_ext_export {
 	protected $format_list = array();
 	protected $mime_list = array();
 	protected $title_list = array();
+	
+	/**
+	 * List of callbacks
+	 *
+	 * @access protected
+	 * @since 0.3
+	 */
 	protected $section_list = array();
 	
 	/**
@@ -70,7 +77,7 @@ class resume_ext_export {
 	 * @access public
 	 * @since 0.3
 	 */
-	function apply_format($format_id, $sections) {
+	function apply_format($resume_id, $format_id, $sections) {
 		//var_dump($sections);
 		global $resume_section_lookup;
 		if(is_file($this->path . $this->format_list[$format_id])) {
@@ -78,11 +85,13 @@ class resume_ext_export {
 			include($this->path . $this->format_list[$format_id]);
 			
 			foreach($sections as $title => $sect) {
-				var_dump($title, $this->section_list[$format_id][$resume_section_lookup[$title]]);
-				if(function_exists($this->section_list[$format_id][$resume_section_lookup[$title]])) {
-					call_user_func($this->section_list[$format_id][$resume_section_lookup[$title]], $sect);
-				} else if (function_exists($this->section_list[$format_id]["fallback"])) {
-					call_user_func($this->section_list[$format_id]["fallback"], $sect);
+				//var_dump($title, $this->section_list[$format_id][$resume_section_lookup[$title]]);
+				if(isset($this->section_list[$format_id][$resume_section_lookup[$title]]) && function_exists($this->section_list[$format_id][$resume_section_lookup[$title]])) {
+					$data = $sect->select_db($resume_id);
+					call_user_func($this->section_list[$format_id][$resume_section_lookup[$title]], $data);
+				} else if (isset($this->section_list[$format_id]["fallback"]) && function_exists($this->section_list[$format_id]["fallback"])) {
+					$data = $sect->select_db_fallback($resume_id);
+					call_user_func($this->section_list[$format_id]["fallback"], $data);
 				}
 			}
 		}

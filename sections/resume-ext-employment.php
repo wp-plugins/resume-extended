@@ -130,6 +130,35 @@ implements resume_ext_exportable {
 		);
 	}
 
+	/**
+	 * The fallback get data function
+	 *
+	 * @since 0.3
+	 * @access public
+	 * @returns an associative array of data about the section strong, title, desc
+	 */
+	public function select_db_fallback($resume_id) {
+		$data = $this->select_db($resume_id);
+		$val = Array();
+		
+		foreach($data as $key => $entry) {
+			$project = new resume_ext_projects($key);
+			
+			//echo "<pre>";
+			//var_dump($project);
+			//echo "</pre>";
+			
+			$val[] = Array(
+				"strong" => $entry['resume_employer'],
+				"title" => $entry['resume_job_title'],
+				"desc" => $entry['resume_start_employ'] . " - " . (($entry['resume_currently_employ'])? "Present" : $entry['resume_end_employ']) . "\n" . $entry['resume_job_desc'],
+				"subsections" => $project->select_db_fallback($entry['employment_history_id'])
+			);
+		}
+		return $val;
+	}
+
+
 	public function format_wp_admin_xhtml() {
 		$output = "<h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . $this->title . "</h" . ($this->nest_level + RESUME_EXT_NEST_OFFSET) . ">" . "<ul>";
 

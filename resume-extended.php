@@ -150,7 +150,6 @@ function resume_ext_content($content) {
 function resume_ext_make_body($matches) {
 	global $resume_sections;
 
-	// wordpress wraps the first tag in a <p> use a decoy to before injecting the stylesheet
 	$body = '
 	<style>
 	.hresume ul li:before{
@@ -249,7 +248,7 @@ function resume_export_page() {
 		$format_id = filter_input(INPUT_GET, 'format', FILTER_SANITIZE_STRING);
 		$resume_id = filter_input(INPUT_GET, 'resume_id', FILTER_SANITIZE_NUMBER_INT);
 		ob_start();
-			$export->apply_format($format_id, $resume_sections);
+			$export->apply_format($resume_id, $format_id, $resume_sections);
 			$data = base64_encode(ob_get_contents());
 		ob_end_clean();
 		

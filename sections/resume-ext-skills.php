@@ -100,6 +100,29 @@ implements resume_ext_exportable {
 			ARRAY_A
 		);
 	}
+	
+	/**
+	 * The fallback get data function
+	 *
+	 * @since 0.3
+	 * @access public
+	 * @returns an associative array of data about the section strong, title, desc
+	 */
+	public function select_db_fallback($resume_id) {
+		$data = $this->select_db($resume_id);
+		$val = Array();
+		
+		foreach($data as $entry) {
+			$val[] = Array(
+				"strong" => NULL,
+				"title" => $entry['resume_skillset_name'],
+				"desc" => $entry['resume_skillset_list'],
+				"subsections" => NULL
+			);
+		}
+		
+		return $val;
+	}
 
 	public function format_entry_xhtml($val, $key) {
 		return $this->format_dl_item(NULL, $val['resume_skillset_name'], $val['resume_skillset_list'] );

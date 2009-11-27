@@ -88,6 +88,26 @@ implements resume_ext_exportable {
 			ARRAY_A
 		);
 	}
+	
+	public function select_db_fallback($resume_id) {
+		$data = $this->select_db($resume_id);
+		$val = Array();
+		
+		//var_dump($this->index, $data);
+		
+		if($data) {
+			foreach($data as $entry) {
+				$val[] = Array(
+					"strong" => NULL,
+					"title" => $entry['resume_project_name'],
+					"desc" => $entry['resume_project_desc'],
+					"subsections" => NULL
+				);
+			}
+		}
+		
+		return $val;
+	}
 
 	public function format_entry_xhtml($val, $key) {
 		return $this->format_dl_item(NULL, $val['resume_project_name'], $val['resume_project_desc'] );

@@ -1,6 +1,6 @@
 <?php
 interface resume_ext_exportable {
-	//function get_data();
-	//function get_data_fallback();
+	function select_db($resume_id);
+	function select_db_fallback($resume_id);
 }
 ?>

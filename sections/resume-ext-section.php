@@ -69,7 +69,7 @@ abstract class resume_ext_section {
 
 	abstract public function create_db();
 	abstract public function insert_db();
-	abstract public function select_db($resume_id);
+	//abstract public function select_db($resume_id);
 	abstract public function format_entry_xhtml($val, $key);
 	abstract public function format_wp_form($prev, $next);
 
@@ -111,10 +111,26 @@ abstract class resume_ext_section {
 	}
 	
 	/**
+	 * The fallback get data function
+	 *
+	 * @since 0.3
+	 * @access public
+	 * @returns an associative array of data about the section strong, title, desc
+	 */
+	public function select_db_fallback($resume_id) {
+		return Array(
+			"strong" => NULL,
+			"title" => NULL,
+			"desc" => NULL
+		);
+	}
+	
+	/**
 	 * Get the list of resumes stored by the plugin
 	 * 
 	 * @todo move this to its own object
 	 * @since 0.3
+	 * @access public
 	 * @returns an associative array of resumes. id => title
 	 */
 	public function get_resumes() {

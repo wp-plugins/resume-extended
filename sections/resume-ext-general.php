@@ -113,7 +113,7 @@ implements resume_ext_exportable {
 
 		$resume = resume_ext_db_manager::make_name(resume_ext_db_manager::name_resume);
 		$vcard = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vcard);
-		$vcard_ci= resume_ext_db_manager::make_name(resume_ext_db_manager::name_vcard_ci);
+		$vcard_ci = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vcard_ci);
 
 		$query = sprintf(
 				resume_ext_db_manager::sql_select_general,
@@ -128,6 +128,25 @@ implements resume_ext_exportable {
 			$query,
 			ARRAY_A
 		);
+	}
+	
+	public function select_db_fallback($resume_id) {
+		$data = $this->select_db($resume_id);
+		$val = Array();
+		
+		//var_dump($this->index, $data);
+		
+		if($data) {
+			$entry = $data;
+			$val[] = Array(
+				"strong" => $entry['resume_name'],
+				"title" => $entry['resume_objective'],
+				"desc" => $data['resume_address'] . " - " . $data['resume_email'] . " - " . $data['resume_website'],
+				"subsections" => NULL
+			);
+		}
+		
+		return $val;
 	}
 
 	/**
