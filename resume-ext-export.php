@@ -88,10 +88,14 @@ class resume_ext_export {
 				//var_dump($title, $this->section_list[$format_id][$resume_section_lookup[$title]]);
 				if(isset($this->section_list[$format_id][$resume_section_lookup[$title]]) && function_exists($this->section_list[$format_id][$resume_section_lookup[$title]])) {
 					$data = $sect->select_db($resume_id);
-					call_user_func($this->section_list[$format_id][$resume_section_lookup[$title]], $sect->get_title(), $data);
+					if(is_array($data)) {
+						call_user_func($this->section_list[$format_id][$resume_section_lookup[$title]], $sect->get_title(), $data);
+					}
 				} else if (isset($this->section_list[$format_id]["fallback"]) && function_exists($this->section_list[$format_id]["fallback"])) {
 					$data = $sect->select_db_fallback($resume_id);
-					call_user_func($this->section_list[$format_id]["fallback"], $sect->get_title(), $data);
+					if(is_array($data)) {
+						call_user_func($this->section_list[$format_id]["fallback"], $sect->get_title(), $data);
+					}
 				}
 			}
 		}
