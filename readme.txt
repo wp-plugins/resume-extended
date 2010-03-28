@@ -20,7 +20,11 @@ Create a resume easily, and allow employers to view it on your blog.
 		* Projects
 	* Education
 	* Awards & Honors
-
+* Export to:
+	* PDF
+	* XML Resume Library 
+	* enhanced XHTML
+	
 = Planned Features =
 
 * Edit and Maintain previously created resumes
@@ -29,11 +33,8 @@ Create a resume easily, and allow employers to view it on your blog.
 	* Publications
 	* References
 * Export to:
-	* PDF **(PLANNED: v0.3)**
 	* Microsoft Word .doc and .docx
 	* Text
-	* enhanced XHTML **(PLANNED: v0.3)**
-	* XML Resume Library **(PLANNED: v0.3)**
 * Import from:
 	* PDF
 	* Microsoft Word .doc and .docx
@@ -62,9 +63,12 @@ Create a resume easily, and allow employers to view it on your blog.
 No, but it can help you create (and in the future, maintian and export) your resume.
 
 = What will happen to my data if I uninstall Resume Extended? =
-Currently, when you deactivate the plugin, the database tables are **not removed**, because there is no export feature in v0.2.
+Currently, when you deactivate the plugin, the database tables are **not removed**, because the export feature in v0.3 is new and and may need some of the bugs worked out.
 
 In future versions the database tables **and the data in them** will be deleted when you uninstall the plugin.  **Please remember to back up**, this is your career after all!
+
+= This is a really awesome plugin, How can I help make it better? =
+There are many ways to help out. You could start by installing the Development Version and let me know how it works.
 
 = Who asked these silly questions anyway? =
 ...Nobody, I just thought they would be useful...
@@ -81,6 +85,7 @@ Look, i'm just trying to help.
 = 0.3.0 (Curry) =
 * added shiny pretty icon
 * added theming
+* added pdf, xrl, hResume export
 * fixed all the short php tags
 
 = 0.2.2 = 
