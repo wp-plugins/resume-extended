@@ -173,14 +173,15 @@ function resume_ext_make_body($matches) {
 		margin-left: 0 !important;
 		padding-left: 0 !important;
 	}
-	</style>
-	<div class="hresume">';
+	</style>';
 
-	foreach($resume_sections as $sect) {
-		$body .= $sect->format_wp_xhtml($matches[1], NULL);
-	}
+	$export = new resume_ext_export();
+	ob_start();
+		$export->apply_format($matches[1],$export->get_for_wp(), $resume_sections);
+		$body = ob_get_contents();
+	ob_end_clean();
 
-	return $body . "\n</div>";
+	return $body;
 }
 
 function resume_ext_make_form($sections) { ?>
@@ -524,7 +525,6 @@ function resume_ext_export() {
 		}
 
 		$export->apply_format($resume_id, $format_id, $resume_sections);
-		$data = base64_encode(ob_get_contents());
 	} 
 	
 	die();

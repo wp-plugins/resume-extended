@@ -9,6 +9,7 @@
  */
 class resume_ext_export {
 	protected $path = "";
+	protected $format_for_page = null;
 	protected $format_list = array();
 	protected $mime_list = array();
 	protected $title_list = array();
@@ -42,6 +43,28 @@ class resume_ext_export {
 	 
 	protected function add_section($format_id, $section_type, $callback) {
 		$this->section_list[$format_id][$section_type] = $callback;
+	}
+	
+	/**
+	 * set the format used for the wordpress page
+	 *
+	 * @access protected
+	 * @since 0.3
+	 */
+	 
+	protected function use_for_wp($format_id) {
+		$this->format_for_page = $format_id;
+	}
+	
+	/**
+	 * get the format used for the wordpress page
+	 *
+	 * @access public
+	 * @since 0.3
+	 */
+	 
+	function get_for_wp() {
+		return $this->format_for_page;
 	}
 	
 	/**
@@ -81,8 +104,8 @@ class resume_ext_export {
 		//var_dump($sections);
 		global $resume_section_lookup;
 		if(is_file($this->path . $this->format_list[$format_id])) {
-			
-			include($this->path . $this->format_list[$format_id]);
+		
+			include_once($this->path . $this->format_list[$format_id]);
 			
 			foreach($sections as $title => $sect) {
 				//var_dump($title, $this->section_list[$format_id][$resume_section_lookup[$title]]);
@@ -112,7 +135,7 @@ class resume_ext_export {
 		
 		if(is_file($this->path . "theme-register.php")) {
 			$resume =& $this;
-			include($this->path . "theme-register.php");
+			include_once($this->path . "theme-register.php");
 		}
 	}
 }

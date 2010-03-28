@@ -28,6 +28,24 @@ function resume_ext_xhtml_fallback($title, $section) {
 <?php
 }
 
+function resume_ext_wp_general($title, $section) {
+	?>
+			<div class="hresume">
+				<div class="contact vcard">
+					<h1 class="fn n"  id="name"><?php echo $section['resume_name'] ?></h1>
+					<span class="adr">
+						<?php echo nl2br($section['resume_address']) ?>
+					</span>
+					<span class="email"><?php echo $section['resume_email'] ?></span>
+					<span class="url"><?php echo $section['resume_website'] ?></span>
+				</div>
+				<div class="summary">
+					<?php echo $section['resume_objective'] ?>
+				</div>
+<?php
+}
+
+
 function resume_ext_xhtml_general($title, $section) {
 	echo <<< XHTML_PROLOG
 <?xml version="1.0" encoding="utf-8"?>
@@ -42,20 +60,8 @@ XHTML_PROLOG;
 		<head>
 			<title><?php echo $section['resume_name'] ?></title>
 		</head>
-		<body>
-			<div class="hresume">
-				<div class="contact vcard">
-					<h1 class="fn n"  id="name"><?php echo $section['resume_name'] ?></h1>
-					<span class="adr">
-						<?php echo nl2br($section['resume_address']) ?>
-					</span>
-					<span class="email"><?php echo $section['resume_email'] ?></span>
-					<span class="url"><?php echo $section['resume_website'] ?></span>
-				</div>
-				<div class="summary">
-					<?php echo $section['resume_objective'] ?>
-				</div>
 <?php
+	resume_ext_wp_general($title, $section);
 }
 
 function resume_ext_xhtml_skills($title, $section) {	
@@ -176,9 +182,14 @@ function resume_ext_xhtml_awards($title, $section) {
 	echo "</ul>";
 }
 
-function resume_ext_xhtml_finish($title, $section) {?>
-
+function resume_ext_wp_finish($title, $section) {?>
 		</div>
+<?php
+}
+
+function resume_ext_xhtml_finish($title, $section) {
+	resume_ext_wp_finish($title, $section);
+?>
 	</body>
 </html>
 <?php

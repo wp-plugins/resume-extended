@@ -21,4 +21,15 @@
 		$resume->add_section(3, "awards", "resume_ext_xrl_awards");
 		$resume->add_section(3, "finish", "resume_ext_xrl_finish");
 		$resume->add_section(3, "fallback", "resume_ext_xrl_fallback");
+		
+	$resume->add_format(4, "html-enhanced/format.php", "XHTML Enhanced", "application/xhtml+xml");
+		$resume->add_section(4, "general", "resume_ext_wp_general");
+		$resume->add_section(4, "skills", "resume_ext_xhtml_skills");
+		$resume->add_section(4, "employment", "resume_ext_xhtml_employment");
+		$resume->add_section(4, "education", "resume_ext_xhtml_education");
+		$resume->add_section(4, "awards", "resume_ext_xhtml_awards");
+		$resume->add_section(4, "finish", "resume_ext_wp_finish");
+		$resume->add_section(4, "fallback", "resume_ext_xhtml_fallback");
+		$resume->use_for_wp(4);
+
 ?>
