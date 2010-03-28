@@ -174,6 +174,32 @@ implements resume_ext_exportable {
 		);
 	}
 
+	/**
+	 * Get the name of a selected resume
+	 *
+	 * @since 0.3
+	 * @param $resume_id int the id of the resume to get the name of
+	 *
+	 */
+	static function select_title($resume_id) {
+		global $wpdb;
+		$resume = resume_ext_db_manager::make_name(resume_ext_db_manager::name_resume);
+
+		$query = sprintf(
+				resume_ext_db_manager::sql_select_title,
+				$resume,
+				$resume_id);
+
+		//echo $query;
+		
+		$row = $wpdb->get_row(
+			$query,
+			ARRAY_A
+		);
+
+		return $row['title'];
+	}
+
 	public function format_entry_xhtml($val, $key) {}
 
 	public function format_wp_xhtml($resume_id, $data) {

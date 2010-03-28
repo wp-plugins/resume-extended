@@ -287,6 +287,14 @@ class resume_ext_db_manager {
 	 * format_entry_xhtml.
 	 */
 	// first param is resume
+	const sql_select_title = '
+		select
+			title
+		from %1$s
+		where resume_id = "%2$d"
+		limit 1';
+		
+	// first param is resume
 	// second param is vcard
 	// third param is vcard_ci
 	// fourth is resume_id
@@ -379,6 +387,8 @@ class resume_ext_db_manager {
 	 *
 	 * These queries are useful the resume editing feature 
 	 */
+	// first param is resume
+	// second param is vcard
 	const sql_select_resumes = '
 		select
 			resume_id,

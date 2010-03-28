@@ -183,6 +183,35 @@ function resume_ext_make_body($matches) {
 	return $body . "\n</div>";
 }
 
+function resume_ext_make_form($sections) { ?>
+	<div id="tabs">
+
+	<ul class="tab_labels">
+<?php
+	foreach($sections as $sect) {
+?>
+		<li><a href="#tab-<?php echo $sect->get_id() ?>"><?php echo $sect->get_title() ?></a></li>
+<?php
+	}
+?>	</ul><?php
+
+	foreach($sections as $i => $sect) {
+		//var_dump($sect);
+?>		<div id="tab-<?php echo $sect->get_id() ?>"> <?php
+		$sect->format_wp_form($resume_sections[$i - 1], $resume_sections[$i + 1]);
+?>		</div><?php
+	}
+?>
+
+	</div><?php
+}
+
+/**
+ * Set-up the menu structure
+ * 
+ * @since 0.2
+ */
+
 function resume_menu()  {
 
 	add_menu_page('Add New', 'R&eacute;sum&eacute; Ext.', 8, 'resume_edit_listing', 'resume_edit_listing', RESUME_EXT_PATH . 'images/resume-ext-icon-small.png');
@@ -199,6 +228,12 @@ function resume_menu()  {
 	<h2>Resume Options</h2>
 </div>
 <?php }*/
+
+/**
+ * New resume page
+ * 
+ * @since 0.2
+ */
 
 function resume_new_page() {
 	global $resume_sections;
@@ -235,7 +270,7 @@ function resume_new_page() {
 }
 
 /**
- * export the resume or show the form to do so
+ * show the form to export a resume
  * 
  * @since 0.3
  */
@@ -243,28 +278,15 @@ function resume_export_page() {
 	global $resume_sections;
 	$export = new resume_ext_export();
 	
-	//FIXME: this is definately temporary
-	if(isset($_GET['format'])) {
-		$format_id = filter_input(INPUT_GET, 'format', FILTER_SANITIZE_STRING);
-		$resume_id = filter_input(INPUT_GET, 'resume_id', FILTER_SANITIZE_NUMBER_INT);
-		ob_start();
-			$export->apply_format($resume_id, $format_id, $resume_sections);
-			$data = base64_encode(ob_get_contents());
-		ob_end_clean();
-		
-		$export->get_mime_type($format_id);
-?>
-		<a href="data:<?php echo $export->get_mime_type($format_id) ?>;base64,<?php echo $data ?>">Download</a>
-<?php
-	} else {
-		//var_dump($resume_sections[0]->get_resumes())
+	
+
 ?>
 		<div class="wrap resume-wrap">
 		<div class="icon32"><img src="<?php echo RESUME_EXT_PATH . 'images/resume-ext-icon-large.png' ?>" /></div>
 		<h2>Export</h2>
 		
-		<form>
-		<input type="hidden" value="resume_export_page" name="page" />
+		<form action="<?php echo RESUME_EXT_AJAX_PATH ?>">
+		<input type="hidden" value="resume_ext_export" name="action" />
 		<select name="resume_id">
 <?php
 		foreach($resume_sections[0]->get_resumes() as $format) {
@@ -284,7 +306,6 @@ function resume_export_page() {
 		</form>
 		</div>
 <?php
-	}
 }
 
 	/**
@@ -296,15 +317,26 @@ function resume_export_page() {
 
 function resume_edit_listing() {
 	global $wpdb;
-	$resume = resume_ext_db_manager::make_name(resume_ext_db_manager::name_resume);
-	$vcard = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vcard);
-	$r_query = sprintf(resume_ext_db_manager::sql_select_resumes, $resume, $vcard);
-	$r_list = $wpdb->get_results($r_query);
 	
-	//var_dump($r_query);
+	$resume_id = filter_input(INPUT_GET, 'resume_id', FILTER_SANITIZE_NUMBER_INT);
+	
 ?>
+
 <div class="wrap">
+	<div class="icon32"><img src="<?php echo RESUME_EXT_PATH . 'images/resume-ext-icon-large.png' ?>" /></div>
 	<h2>Edit R&eacute;sum&eacute;s</h2>
+	
+<?php
+	if($resume_id) {
+	} else {
+		$resume = resume_ext_db_manager::make_name(resume_ext_db_manager::name_resume);
+		$vcard = resume_ext_db_manager::make_name(resume_ext_db_manager::name_vcard);
+		$r_query = sprintf(resume_ext_db_manager::sql_select_resumes, $resume, $vcard);
+		$r_list = $wpdb->get_results($r_query);
+	
+		//var_dump($r_query);
+?>
+
 	<table class="widefat post fixed">
 		<thead>
 			<tr>
@@ -316,13 +348,15 @@ function resume_edit_listing() {
 		<tbody><?php
 	foreach($r_list as $r) {
 		?><tr>
-			<td><?php echo $r->title ?></td>
+			<td><a href="?page=resume_edit_listing&resume_id=<?php echo $r->resume_id ?>"><?php echo $r->title ?></a></td>
 			<td><?php echo $r->formatted_name ?></td>
 			<td><?php echo $r->last_update ?></td>
 		</tr><?php
 	}	?>
 		</tbody>
-	</table>
+	</table><?php
+	}
+	?>
 </div>
 <?php
 }
@@ -381,6 +415,8 @@ add_action('wp_ajax_resume_new', 'resume_new');
 add_action('wp_ajax_resume_new_project', 'resume_new_project');
 add_action('wp_ajax_resume_finalize', 'resume_finalize');
 add_action('wp_ajax_resume_reset', 'resume_reset');
+
+add_action('wp_ajax_resume_ext_export', 'resume_ext_export');
 
 function resume_new() {
 	global $resume_sections;
@@ -462,5 +498,37 @@ function resume_reset() {
 	unset($_SESSION['resume']);
 	die();
 }
+
+/**
+ * export the resume, abuse the ajax api to do so
+ * 
+ * @since 0.3
+ */
+function resume_ext_export() {
+	global $resume_sections;
+	$export = new resume_ext_export();
+	
+	$extensions = Array(
+		"application/pdf" => "pdf",
+		"application/xhtml+xml" => "html",
+		"application/xml" => "xml"
+	);
+
+	if(isset($_GET['format'])) {
+		$format_id = filter_input(INPUT_GET, 'format', FILTER_SANITIZE_STRING);
+		$resume_id = filter_input(INPUT_GET, 'resume_id', FILTER_SANITIZE_NUMBER_INT);
+
+		header('Content-type:' . $export->get_mime_type($format_id) );
+		if(isset($extensions[$export->get_mime_type($format_id)])) {
+			header('Content-Disposition: attachment; filename="' . resume_ext_general::select_title($resume_id) . "." . $extensions[$export->get_mime_type($format_id)] . '"');
+		}
+
+		$export->apply_format($resume_id, $format_id, $resume_sections);
+		$data = base64_encode(ob_get_contents());
+	} 
+	
+	die();
+}
+
 
 ?>

@@ -24,7 +24,7 @@ class resume_ext_export {
 	/**
 	 * add a format to the list of available formats
 	 *
-	 * @access public
+	 * @access protected
 	 * @since 0.3
 	 */
 	protected function add_format($format_id, $file, $title, $mime = "text/html") {
