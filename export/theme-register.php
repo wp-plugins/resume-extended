@@ -4,7 +4,13 @@
 		$resume->add_section(1, "finish", "resume_ext_pdf_finish");
 		$resume->add_section(1, "fallback", "resume_ext_pdf_fallback");
 		
-	$resume->add_format(2, "html-enhanced/format.php", "XHTML Enhanced", "text/html");
+	$resume->add_format(2, "html-enhanced/format.php", "XHTML Enhanced", "application/xhtml+xml");
+		$resume->add_section(2, "general", "resume_ext_xhtml_general");
+		$resume->add_section(2, "skills", "resume_ext_xhtml_skills");
+		$resume->add_section(2, "employment", "resume_ext_xhtml_employment");
+		$resume->add_section(2, "education", "resume_ext_xhtml_education");
+		$resume->add_section(2, "awards", "resume_ext_xhtml_awards");
+		$resume->add_section(2, "finish", "resume_ext_xhtml_finish");
 		$resume->add_section(2, "fallback", "resume_ext_xhtml_fallback");
 		
 	$resume->add_format(3, "xrl/format.php", "XML Resume Library", "application/xml");
