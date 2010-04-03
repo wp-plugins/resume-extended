@@ -107,6 +107,8 @@ function resume_admin_styles () {
 	switch($_GET['page']) {
 		case 'resume_new_page':
 		case 'resume_export_page':
+		case 'resume_edit_listing':
+		case 'resume_export_page':
 			wp_enqueue_style('resume_admin_css', RESUME_EXT_PATH . "admin_styles.css");
 			wp_enqueue_style('resume_ui_smoothness', RESUME_EXT_PATH . "css/smoothness/jquery-ui-1.7.2.custom.css");
 			break;
@@ -122,6 +124,8 @@ function resume_admin_scripts () {
 
 	switch($_GET['page']) {
 		case 'resume_new_page':
+		case 'resume_export_page':
+		case 'resume_edit_listing':
 		case 'resume_export_page':
 			wp_enqueue_script('jquery');
 			wp_enqueue_script('jquery-ui-core',false,array('jquery'));
@@ -282,7 +286,7 @@ function resume_export_page() {
 	
 
 ?>
-		<div class="wrap resume-wrap">
+		<div class="wrap resume_wrap">
 		<div class="icon32"><img src="<?php echo RESUME_EXT_PATH . 'images/resume-ext-icon-large.png' ?>" /></div>
 		<h2>Export</h2>
 		
@@ -323,7 +327,7 @@ function resume_edit_listing() {
 	
 ?>
 
-<div class="wrap">
+<div class="wrap resume_wrap">
 	<div class="icon32"><img src="<?php echo RESUME_EXT_PATH . 'images/resume-ext-icon-large.png' ?>" /></div>
 	<h2>Edit R&eacute;sum&eacute;s</h2>
 	
