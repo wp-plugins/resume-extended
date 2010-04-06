@@ -1,0 +1,17 @@
+#map,
+#timeline{
+	width: 100%;
+	height: 300px;
+	
+}
+
+#timeline {
+	overflow: auto;
+	position: relative;
+}
+
+.time-span {
+	border: 1px solid black;
+	width: 100%;
+	text-align: center;
+}
