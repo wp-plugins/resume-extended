@@ -82,23 +82,29 @@ Look, i'm just trying to help.
 2. Spiff up your employment history, no matter how bizarre.
 
 == Changelog ==
+
 = 0.3.0 (Curry) =
+
 * added shiny pretty icon
 * added theming
 * added pdf, xrl, hResume export
 * fixed all the short php tags
 
 = 0.2.2 = 
+
 * fixed display error in admin panel
 
 = 0.2.1 =
+
 * removed debugging code
 
 = 0.2 (Au Gratin) =
+
 * added projects to Employment History.
 * store data in database for later functionality.
 * removed unnecessary files and further reduces file size
 * other bug fixes
 
 = 0.1 (Balut) =
+
 * create a basic resume.

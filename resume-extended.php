@@ -26,15 +26,31 @@ Author URI: http://sachimp.com/
 */
 
 /**
- * Version 0.3.0
+ * Resume Extended
+ * a Wordpress plugin for creating and managing your resume
+ *
+ * @copyright Copyright 2009 Aaron Spaulding 
+ * @package resume-extended
+ * @since 0.1
+ * @author Aaron Spaulding
+ **/
+
+/**
+ * The prefix for DB tables
  */
 define("RESUME_EXTENDED_NAME", "resume_ext_");
+
+/**#@+
+ * Version 0.3.0
+ * version constant definitions
+ */
 define("RESUME_EXTENDED_VERSION", 3);
 define("RESUME_EXTENDED_VERSION_MINOR", 0);
 define("RESUME_EXTENDED_VERSION_PRETTY", "0.3.0");
 define("RESUME_EXTENDED_VERSION_CODENAME", "Curry");
+/**#@-*/
 
-/**
+/**#@+
  * Determine the location
  * 
  * always end paths with a trailing slash
@@ -49,6 +65,7 @@ define("RESUME_EXT_EXTERNAL_THEME_PATH", get_template_directory() . "/resume-ext
 define("RESUME_EXT_THEME_PATH", RESUME_EXT_PATH_INTERNAL . "export/");
 
 define("RESUME_EXT_NEST_OFFSET", 3);
+/**#@-*/
 
 global $resume_path;
 global $resume_ajax;
@@ -96,7 +113,12 @@ add_filter('the_content', 'resume_ext_content');
 add_action('admin_print_styles', 'resume_admin_styles');
 add_action('admin_print_scripts', 'resume_admin_scripts');
 
-
+/**
+ * include the style sheets for the admin interface
+ *
+ * @since 0.2
+ * @author Aaron Spaulding
+ */
 function resume_admin_styles () {
 	// outright stolen from NextGEN
 	if(!isset($_GET['page']))
@@ -115,6 +137,12 @@ function resume_admin_styles () {
 	}
 }
 
+/**
+ * include the scripts for the admin interface
+ *
+ * @since 0.2
+ * @author Aaron Spaulding
+ */
 function resume_admin_scripts () {
 	// outright stolen from NextGEN
 	if(!isset($_GET['page']))
@@ -143,6 +171,14 @@ function resume_admin_scripts () {
 	}
 }
 
+/**
+ * take content of a blog post or page and replace the short tag with the resume
+ *
+ * @since 0.2
+ * @param string $content 
+ * @return content with the short tag replaced
+ * @author Aaron Spaulding
+ */
 function resume_ext_content($content) {
 	$regex = "/\s*\[resume-ext id=\"(\d+)\"]\s*/";
 	//$regex = "/resume-ext/";
@@ -151,6 +187,15 @@ function resume_ext_content($content) {
 	return $content;
 }
 
+/**
+ * the call back for preg_replace in resume_ext_content
+ * format the the resume for use in the wordpress blog or page
+ *
+ * @since 0.2
+ * @param string $matches 
+ * @return the html formatted resume
+ * @author Aaron Spaulding
+ */
 function resume_ext_make_body($matches) {
 	global $resume_sections;
 
@@ -187,7 +232,14 @@ function resume_ext_make_body($matches) {
 
 	return $body;
 }
-
+/**
+ * make the new resume form
+ *
+ * @since 0.2
+ * @param string $sections an array of resume sections
+ * @return void
+ * @author Aaron Spaulding
+ */
 function resume_ext_make_form($sections) { ?>
 	<div id="tabs">
 
@@ -313,12 +365,12 @@ function resume_export_page() {
 <?php
 }
 
-	/**
-	 * The edit listing page
-	 *
-	 * @since 0.3
-	 *
-	 */
+/**
+ * The edit listing page
+ *
+ * @since 0.3
+ *
+ */
 
 function resume_edit_listing() {
 	global $wpdb;
@@ -404,6 +456,13 @@ set_error_handler(resume_error);
 $wpdb->hook_error('resume_db_error');
 $wpdb->show_errors();*/
 
+/**
+ * plugin activation, create the DB
+ *
+ * @since 0.2
+ * @return void
+ * @author Aaron Spaulding
+ */
 function resume_ext_install() {
 	global $wpdb;
 	global $resume_sections;
@@ -423,6 +482,13 @@ add_action('wp_ajax_resume_reset', 'resume_reset');
 
 add_action('wp_ajax_resume_ext_export', 'resume_ext_export');
 
+/**
+ * add a new section to the current resume
+ *
+ * @since 0.2
+ * @return void
+ * @author Aaron Spaulding
+ */
 function resume_new() {
 	global $resume_sections;
 
@@ -437,6 +503,14 @@ function resume_new() {
 	die($resume_sections[$sub_action]->format_wp_admin_xhtml());
 }
 
+/**
+ * add a project to the current resume  
+ *
+ * @todo make this generic
+ * @since 0.2
+ * @return void
+ * @author Aaron Spaulding
+ */
 function resume_new_project() {
 	global $resume_sections;
 
@@ -452,6 +526,13 @@ function resume_new_project() {
 	die($prj->format_wp_admin_xhtml());
 }
 
+/**
+ * take the temporarily stored resume and persist it to the DB
+ *
+ * @return void
+ * @since 0.2
+ * @author Aaron Spaulding
+ */
 function resume_finalize() {
 	global $wpdb;
 	global $user_ID;
@@ -498,6 +579,13 @@ function resume_finalize() {
 	die('{ page_id: "' . RESUME_EXT_ADMIN_PATH . "page.php?action=edit&post=".$wpdb->insert_id . '" }');
 }
 
+/**
+ * clear the temporarily stored resume
+ *
+ * @return void
+ * @since 0.2
+ * @author Aaron Spaulding
+ */
 function resume_reset() {
 	session_start();
 	unset($_SESSION['resume']);
