@@ -36,8 +36,8 @@ function resume_ext_wp_general($title, $section) {
 					<span class="adr">
 						<?php echo nl2br($section['resume_address']) ?>
 					</span>
-					<span class="email"><?php echo $section['resume_email'] ?></span>
-					<span class="url"><?php echo $section['resume_website'] ?></span>
+					<a href="mailto:<?php echo $section['resume_email'] ?>" class="email"><?php echo $section['resume_email'] ?></a>
+					<a href="<?php echo $section['resume_website'] ?>" class="url"><?php echo $section['resume_website'] ?></a>
 				</div>
 				<div class="summary">
 					<?php echo $section['resume_objective'] ?>
