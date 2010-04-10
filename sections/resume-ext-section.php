@@ -17,6 +17,19 @@ abstract class resume_ext_section {
 	protected function filter_data() {
 		return filter_input_array(INPUT_POST, $this->filters);
 	}
+	
+	/**
+	 * Format a date according to the users preferred date format_id
+	 *
+	 * @param timestamp the unix timestamp
+	 * @since 0.3
+	 * @author Aaron Spaulding
+	 */
+	
+	protected function format_date($timestamp) {
+		return date(get_option('date_format'), $timestamp);
+	
+	}
 
 	protected function format_dl_item($strong, $title, $desc)  {
 		return '<li><div class="part_title" style="width:100%">' . (($strong)? "<strong>" . $strong . "</strong> ": "") . $title . "</div>"
@@ -66,6 +79,8 @@ abstract class resume_ext_section {
 		</div>
 <?php
 	}
+	
+	protected $sub_sections = Array();
 
 	abstract public function create_db();
 	abstract public function insert_db();

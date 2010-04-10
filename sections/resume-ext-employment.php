@@ -122,12 +122,19 @@ implements resume_ext_exportable {
 				$vevent,
 				$resume_id );
 
-		//echo $query;
-
-		return $wpdb->get_results(
+		$results = $wpdb->get_results(
 			$query,
 			ARRAY_A
 		);
+		
+		foreach($results as &$r) {
+			$r['resume_start_employ'] = $this->format_date($r['resume_start_employ_timestamp']);
+			$r['resume_end_employ'] = $this->format_date($r['resume_end_employ_timestamp']);
+		}
+
+		//echo $query;
+
+		return $results;
 	}
 
 	/**

@@ -313,10 +313,14 @@ class resume_ext_db_manager {
 		where resume_id = "%d"
 		limit 1';
 
-	// first is skillset
-	// second is skill
-	// third is resume_id
-	const sql_select_skills = '
+	/**
+	 * Select the skills sutiable for a fallback method
+	 *
+	 * @param %1$s the table name "skillset"
+	 * @param %2$s the table name "skill"
+	 * @param %3$d the resume id
+	 */
+	/*const sql_select_skills_fallback = '
 		select
 			%1$s.name as resume_skillset_name,
 			group_concat(%2$s.name SEPARATOR ", ") as resume_skillset_list
@@ -324,7 +328,32 @@ class resume_ext_db_manager {
 		left join %2$s
 			using (skillset_id)
 		where resume_id = "%3$d"
-		group by %1$s.skillset_id';
+		group by %1$s.skillset_id'; */
+	
+	/**
+	 * Select the titles of the skill areas
+	 *
+	 * @param %1$s the table name "skillset"
+	 * @param %2$d the resume id
+	 */
+	const sql_select_skill_titles = '
+		select
+			name as resume_skillset_name,
+			skillset_id as resume_skillset_id
+		from %1$s
+		where resume_id = "%2$d"';
+	
+	/**
+	 * Select the titles of the skill areas
+	 *
+	 * @param %1$s the table name "skill"
+	 * @param %2$d the skillset id
+	 */
+	const sql_select_skills = '
+		select
+			name as resume_skill
+		from %1$s
+		where skillset_id = "%2$d"';
 
 	// first param is employment_history
 	// second param is vevent
@@ -334,8 +363,8 @@ class resume_ext_db_manager {
 			employment_history_id,
 			employer as resume_employer,
 			title as resume_job_title,
-			date_format(DTSTART, "%%M %%D, %%Y") as resume_start_employ,
-			date_format(DTEND, "%%M %%D, %%Y") as resume_end_employ,
+			UNIX_TIMESTAMP(DTSTART) as resume_start_employ_timestamp,
+			UNIX_TIMESTAMP(DTEND) as resume_end_employ_timestamp,
 			status as resume_currently_employ,
 			DESCRIPTION as resume_job_desc
 		from %1$s
@@ -361,7 +390,7 @@ class resume_ext_db_manager {
 			major as resume_major,
 			minor as resume_minor,
 			level as resume_degree,
-			date_format(DTEND, "%%M %%D, %%Y") as resume_date_graduated,
+			UNIX_TIMESTAMP(DTEND) as resume_date_graduated_timestamp,
 			enrolled as resume_currently_enrolled
 		from %1$s
 		left join %2$s
@@ -374,7 +403,7 @@ class resume_ext_db_manager {
 	const sql_select_awards = '
 		select
 			SUMMARY as resume_award_title,
-			date_format(DTSTART, "%%M %%D, %%Y") as resume_award_date,
+			UNIX_TIMESTAMP(DTSTART) as resume_award_date_timestamp,
 			DESCRIPTION as resume_award_desc
 		from %1$s
 		left join %2$s

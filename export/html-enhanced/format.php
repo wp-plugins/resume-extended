@@ -72,8 +72,8 @@ function resume_ext_xhtml_skills($title, $section) {
 			<ul>
 				<?php
 				
-		foreach(explode(",", $sect['resume_skillset_list']) as $skill) {?>
-				<li><a href="<?php echo  $skill ?>" rel="tag"><?php echo $skill ?></a></li>
+		foreach($sect['resume_skills'] as $skill) {?>
+				<li><a href="http://www.wikipedia.com/wiki/<?php echo $skill ?>" rel="tag"><?php echo $skill ?></a></li>
 <?php
 		}
 ?>

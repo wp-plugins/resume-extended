@@ -55,7 +55,7 @@ function resume_ext_xrl_skills($title, $section) {
 			<skillset>
 				<title><?php echo $sect['resume_skillset_name'] ?></title><?php
 				
-		foreach(explode(",", $sect['resume_skillset_list']) as $skill) {?>
+		foreach($sect['resume_skills'] as $skill) {?>
 				<skill><?php echo $skill ?></skill>
 <?php
 		}

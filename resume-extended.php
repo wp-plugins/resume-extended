@@ -78,6 +78,8 @@ require_once('resume-ext-db-manager.php');
 require_once('resume-ext-export.php');
 require_once('resume-ext-exportable.php');
 
+include_once('sections/resume-ext-resume.php');
+
 include_once('sections/resume-ext-general.php');
 include_once('sections/resume-ext-skills.php');
 include_once('sections/resume-ext-employment.php');
@@ -417,44 +419,22 @@ function resume_edit_listing() {
 </div>
 <?php
 }
-/*
-function resume_error($errno, $errstr, $errfile, $errline, $errcontext) {
-	$errortype = array (
-			E_ERROR              => 'Error',
-			E_WARNING            => 'Warning',
-			E_PARSE              => 'Parsing Error',
-			E_NOTICE             => 'Notice',
-			E_CORE_ERROR         => 'Core Error',
-			E_CORE_WARNING       => 'Core Warning',
-			E_COMPILE_ERROR      => 'Compile Error',
-			E_COMPILE_WARNING    => 'Compile Warning',
-			E_USER_ERROR         => 'User Error',
-			E_USER_WARNING       => 'User Warning',
-			E_USER_NOTICE        => 'User Notice',
-			E_STRICT             => 'Runtime Notice',
-			E_RECOVERABLE_ERROR  => 'Catchable Fatal Error'
-			);
-	$errstr .= "\n  File: " . $errfile . "\n  Line: " . $errline;
-	if(class_exists(FB) && (ob_get_level() > 0)) {
-		FB::error($errstr, $errortype[$errno]);
-		FB::info($errcontext, $errortype[$errno] . " Context");
-		FB::trace($errortype[$errno] . " Stack Trace");
-	}
+
+/**
+ * print the value of a variable for debugging 
+ *
+ * @since 0.3
+ * @param &$var the variable to print
+ * @return void
+ * @author Aaron Spaulding
+ */
+
+function print_debugging(&$var) {
+	echo "<div class\"debug\"><pre class=\"variable\">";
+	var_dump(&$var);
+	echo "</pre></div>";
 }
 
-function resume_db_error($str, $query) {
-	if(class_exists(FB) && (ob_get_level() > 0)) {
-		$errstr = $str . "  Query: " . $query;
-		FB::error($errstr, "WP DB Error");
-		FB::trace("WP DB Error");
-	}
-}
-
-// this may surface some errors that aren't fixable
-//   see bug: #10536
-set_error_handler(resume_error);
-$wpdb->hook_error('resume_db_error');
-$wpdb->show_errors();*/
 
 /**
  * plugin activation, create the DB

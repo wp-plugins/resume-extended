@@ -108,13 +108,19 @@ implements resume_ext_exportable {
 				$degree,
 				$vevent,
 				$resume_id);
-
-		//echo $query;
-
-		return $wpdb->get_results(
+				
+		$results = $wpdb->get_results(
 			$query,
 			ARRAY_A
 		);
+		
+		foreach($results as &$r) {
+			$r['resume_date_graduated'] = $this->format_date($r['resume_date_graduated_timestamp']);
+		}
+
+		//echo $query;
+
+		return $results;
 	}
 	
 	public function select_db_fallback($resume_id) {

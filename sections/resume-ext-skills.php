@@ -88,17 +88,31 @@ implements resume_ext_exportable {
 		$skill = resume_ext_db_manager::make_name(resume_ext_db_manager::name_skill);
 
 		$query = sprintf(
-				resume_ext_db_manager::sql_select_skills,
+				resume_ext_db_manager::sql_select_skill_titles,
 				$skillset,
-				$skill,
 				$resume_id);
-
-		//echo $query;
-
-		return $wpdb->get_results(
+		
+		$results = $wpdb->get_results(
 			$query,
 			ARRAY_A
 		);
+		
+		foreach($results as &$set) {
+			$q = sprintf(
+				resume_ext_db_manager::sql_select_skills,
+				$skill,
+				$set['resume_skillset_id']);
+			
+			//print_debugging($q);
+				
+			$set['resume_skills'] = $wpdb->get_col(
+				$q, 0);
+			
+		}
+
+		//print_debugging($results);
+
+		return $results;
 	}
 	
 	/**
@@ -116,7 +130,7 @@ implements resume_ext_exportable {
 			$val[] = Array(
 				"strong" => NULL,
 				"title" => $entry['resume_skillset_name'],
-				"desc" => $entry['resume_skillset_list'],
+				"desc" => implode($entry['resume_skills'], ", "),
 				"subsections" => NULL
 			);
 		}

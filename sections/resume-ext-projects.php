@@ -82,11 +82,17 @@ implements resume_ext_exportable {
 				$resume_id);
 
 		//echo $query;
-
-		return $wpdb->get_results(
+		
+		$results = $wpdb->get_results(
 			$query,
 			ARRAY_A
 		);
+		
+		/*foreach($results as $r) {
+			
+		}*/
+
+		return $results;
 	}
 	
 	public function select_db_fallback($resume_id) {
