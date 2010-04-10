@@ -1,10 +1,10 @@
 <?php
 
 function resume_ext_xrl_date($date) {
-	$date = date_parse ($date) ?>
-		<dayOfMonth><?php echo $date['day'] ?></dayOfMonth>
-		<month><?php echo $date['month'] ?></month>
-		<year><?php echo $date['year'] ?></year>
+	$date = new DateTime("@$date") ?>
+		<dayOfMonth><?php echo $date->format('j') ?></dayOfMonth>
+		<month><?php echo $date->format('n') ?></month>
+		<year><?php echo $date->format('Y') ?></year>
 	<?php
 }
 
@@ -75,26 +75,20 @@ function resume_ext_xrl_employment($title, $section) {
 	
 	echo "<history>";
 	
-	foreach($section as $sect) { 
-		$from_date = date_parse ($sect['resume_start_employ']);
-		$to_date = date_parse ($sect['resume_end_employ'])?>
+	foreach($section as $sect) { ?>
 		<job>
 			<jobtitle><?php echo $sect['resume_job_title'] ?></jobtitle>
 			<employer><?php echo $sect['resume_employer'] ?></employer>
 			<period>
 				<from>
-					<dayOfMonth><?php echo $from_date['day'] ?></dayOfMonth>
-					<month><?php echo $from_date['month'] ?></month>
-					<year><?php echo $from_date['year'] ?></year>
+					<?php resume_ext_xrl_date($sect['resume_start_employ_timestamp']) ?>
 				</from>
 				<to><?php
 		if($sect["resume_currently_employ"]){
 			echo "<present />";
-		} else {?>
-					<dayOfMonth><?php echo $to_date['day'] ?></dayOfMonth>
-					<month><?php echo $to_date['month'] ?></month>
-					<year><?php echo $to_date['year'] ?></year>	
-<?php	}?>
+		} else {
+			resume_ext_xrl_date($sect['resume_end_employ_timestamp']);
+		}?>
 					
 				</to>
 			</period>
@@ -129,7 +123,7 @@ function resume_ext_xrl_education($title, $section) {
 		if($sect["resume_currently_enrolled"]){
 			echo "<present />";
 		} else {
-			resume_ext_xrl_date($sect['resume_date_graduated']);
+			resume_ext_xrl_date($sect['resume_date_graduated_timestamp']);
 		}?>
 			</date>
 			<!--<projects>
@@ -154,7 +148,7 @@ function resume_ext_xrl_awards($title, $section) {
 		<award>
 			<title><?php echo $sect['resume_award_title'] ?></title>
 			<date><?php
-			resume_ext_xrl_date($sect['resume_award_date']);?>
+			resume_ext_xrl_date($sect['resume_award_date_timestamp']);?>
 			</date>
 			<description>
 			<?php echo $sect['resume_award_desc'] ?>
