@@ -50,5 +50,9 @@ class resume_ext_finish extends resume_ext_section {
 	public function format_wp_xhtml() {
 		return "";
 	}
+	
+	public function has_entries($id) {
+		return true;
+	}
 }
 ?>
