@@ -1,8 +1,8 @@
 <?php
 
-function resume_ext_hresume_date($date_pretty, $class) {
-	$date = date_parse ($date_pretty) ?>
-	<abbr class="<?php echo $class ?>" title="<?php echo $date['year'] ?>-<?php echo $date['month'] ?>-<?php echo $date['day'] ?>"><?php echo $date_pretty ?></abbr>
+function resume_ext_hresume_date($date_pretty, $timestamp, $class) {
+	?>
+	<abbr class="<?php echo $class ?>" title="<?php echo date('Y-m-d', $timestamp) ?>"><?php echo $date_pretty ?></abbr>
 	<?php
 }
 
@@ -99,13 +99,13 @@ function resume_ext_xhtml_employment($title, $section) {
 			<span class="title"><?php echo $sect['resume_job_title'] ?></span>
 			<span class="org"><?php echo $sect['resume_employer'] ?></span>
 			<span class="period">
-				<?php resume_ext_hresume_date($sect['resume_start_employ'], "dtstart") ?>
+				<?php resume_ext_hresume_date($sect['resume_start_employ'], $sect['resume_start_employ_timestamp'], "dtstart") ?>
 				&ndash;
 				<?php
 		if($sect["resume_currently_employ"]){
-			echo "<abbr class=\"dtend\">present</abbr>";
+			resume_ext_hresume_date("present", time(), "dtend");
 		} else {
-			resume_ext_hresume_date($sect['resume_end_employ'], "dtend");
+			resume_ext_hresume_date($sect['resume_end_employ'], $sect['resume_end_employ_timestamp'], "dtend");
 		}?>
 			</span>
 			<p class="description"><?php echo $sect["resume_job_desc"] ?></p>
@@ -139,9 +139,9 @@ function resume_ext_xhtml_education($title, $section) {
 			</span>
 			<span  class="period"><?php
 		if($sect["resume_currently_enrolled"]){
-			echo "<abbr class=\"dtend\">present</abbr>";
+			resume_ext_hresume_date("currently enrolled", time(), "dtend");
 		} else {
-			resume_ext_hresume_date($sect['resume_date_graduated'], "dtend");
+			resume_ext_hresume_date($sect['resume_date_graduated'], $sect['resume_date_graduated_timestamp'], "dtend");
 		}?>
 			</span>
 			<!--<projects>
@@ -167,7 +167,7 @@ function resume_ext_xhtml_awards($title, $section) {
 		<li class="vevent -rex-awards">
 			<span class="summary"><?php echo $sect['resume_award_title'] ?></span>
 			<span class="period"><?php
-			resume_ext_hresume_date($sect['resume_award_date'], "dtstart");?>
+			resume_ext_hresume_date($sect['resume_award_date'], $sect['resume_award_date_timestamp'], "dtstart");?>
 			</span>
 			<span class="description">
 			<?php echo $sect['resume_award_desc'] ?>
