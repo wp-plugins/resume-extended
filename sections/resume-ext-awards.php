@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * Awards Section
+ * manage everything that has to do with the awards section.
+ *
+ * @package resume-extended
+ * @subpackage resume-extended-sections
+ * @since 0.2
+ * @author Aaron Spaulding
+ **/
+
 require_once('resume-ext-section.php');
 
 class resume_ext_awards 

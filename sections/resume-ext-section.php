@@ -1,19 +1,102 @@
 <?php
+/**
+ * Base Class for all Sections
+ * implement the basics for a section that does nothing
+ *
+ * @package resume-extended
+ * @subpackage resume-extended-sections
+ * @since 0.2
+ * @author Aaron Spaulding
+ **/
+
 abstract class resume_ext_section {
+	/**
+	 * The copy for the title of the section
+	 * 
+	 * @var string
+	 * @since 0.2
+	 * @author Aaron Spaulding
+	 */
 	protected $title = "Generic Un-named section";
+	
+	/**
+	 * The copy for the call to action to save the section
+	 * 
+	 * @var string
+	 * @since 0.2
+	 * @author Aaron Spaulding
+	 */
 	protected $cta = "Add Generic";
+	
+	/**
+	 * The id of the section
+	 *
+	 * @var string
+	 * @since 0.2
+	 * @author Aaron Spaulding
+	 */
 	protected $id = 'generic';
 
+	/**
+	 * The level of nested sections, used for properly creating headings
+	 *
+	 * @var integer
+	 * @since 0.2
+	 * @author Aaron Spaulding
+	 */
 	protected $nest_level = 0;
 
+	/**
+	 * the action to take when the form is submitted
+	 *
+	 * @var string
+	 * @since 0.2
+	 * @author Aaron Spaulding
+	 */
 	protected $wp_action = "resume_new";
 
+	/**
+	 * the position of the object in the array
+	 *
+	 * @deprecated
+	 * @var integer
+	 * @since 0.2
+	 * @author Aaron Spaulding
+	 */
 	protected $index = 0;
 
+	/**
+	 * the table used to count the number of entries in this section
+	 *
+	 * @var string
+	 * @since 0.2
+	 * @author Aaron Spaulding
+	 */
 	protected $count_table = "";
+	
+	/**
+	 * the id used to filter the list of ventries
+	 *
+	 * @var string
+	 * @since 0.2
+	 * @author Aaron Spaulding
+	 */
 	protected $count_table_id = "resume_id";
 
+	/**
+	 * The filters to be used in the filter_input_array() function
+	 *
+	 * @since 0.2
+	 * @author Aaron Spaulding
+	 */
 	protected $filters = FILTER_SANITIZE_SPECIAL_CHARS;
+	
+	/**
+	 * filters the POST data according to the {@link $filters} variable
+	 *
+	 * @return array the filtered results of a form post
+	 * @author Aaron Spaulding
+	 */
 	protected function filter_data() {
 		return filter_input_array(INPUT_POST, $this->filters);
 	}
@@ -31,11 +114,28 @@ abstract class resume_ext_section {
 	
 	}
 
+	/**
+	 * formats an entry as a list item
+	 *
+	 * @since 0.2
+	 * @param string $strong the emphasized part of the title
+	 * @param string $title  the rest of the title
+	 * @param string $desc the description of the entry
+	 * @return string the formatted item
+	 * @author Aaron Spaulding
+	 */
 	protected function format_dl_item($strong, $title, $desc)  {
 		return '<li><div class="part_title" style="width:100%">' . (($strong)? "<strong>" . $strong . "</strong> ": "") . $title . "</div>"
 			. '<div class="part_desc" style="width:100%">' . $desc . "</div></li>";
 	}
 
+	/**
+	 * the starting part of the form
+	 *
+	 * @since 0.2
+	 * @return void
+	 * @author Aaron Spaulding
+	 */
 	protected function format_start_form() {
 		global $resume_ajax; ?>
 		<div class="sub_form">
@@ -130,7 +230,7 @@ abstract class resume_ext_section {
 	 *
 	 * @since 0.3
 	 * @access public
-	 * @returns an associative array of data about the section strong, title, desc
+	 * @return array an associative array of data about the section strong, title, desc
 	 */
 	public function select_db_fallback($resume_id) {
 		return Array(
@@ -146,7 +246,7 @@ abstract class resume_ext_section {
 	 * @todo move this to its own object
 	 * @since 0.3
 	 * @access public
-	 * @returns an associative array of resumes. id => title
+	 * @return array an associative array of resumes. id => title
 	 */
 	public function get_resumes() {
 		global $wpdb;
