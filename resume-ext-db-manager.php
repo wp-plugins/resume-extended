@@ -69,8 +69,8 @@ class resume_ext_db_manager {
 	 * The table create statment
 	 */
 	// first param is vcard
-	const sql_vcard = "
-		CREATE TABLE `%s` (
+	const sql_vcard = '
+		CREATE TABLE "%1$s" (
 			`vcard_id` INT UNSIGNED NOT NULL auto_increment,
 			`N` VARCHAR(32) NULL,
 			`FN` VARCHAR(32) NULL,
@@ -80,45 +80,45 @@ class resume_ext_db_manager {
 			`URL` VARCHAR(45) NULL,
 			`REV` TIMESTAMP NOT NULL DEFAULT now(),
 		PRIMARY KEY (`vcard_id`) )
-		ENGINE = InnoDB;";
+		ENGINE = InnoDB;';
 
 	// first param is vcard_contact_info
 	// second param is vcard
-	const sql_vcard_ci = "
-		CREATE  TABLE `%s` (
+	const sql_vcard_ci = '
+		CREATE  TABLE "%1$s" (
 			`vcard_contact_info_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-			`info_type` ENUM('work','home','other') NULL,
+			`info_type` ENUM("work","home","other") NULL,
 			`pref` TINYINT(1) NULL,
 			`TEL` VARCHAR(15) NULL,
-			`TEL_type` SET('cell','voice') NULL,
-			`EMAIL` VARCHAR(128) NULL COMMENT 'TYPE=internet always',
+			`TEL_type` SET("cell","voice") NULL,
+			`EMAIL` VARCHAR(128) NULL COMMENT "TYPE=internet always",
 			`LABEL` VARCHAR(256) NULL ,
-			`LABEL_type` SET('dom','intl','postal','parcel') NULL,
+			`LABEL_type` SET("dom","intl","postal","parcel") NULL,
 			`vcard_id` INT unsigned NULL,
 		PRIMARY KEY (`vcard_contact_info_id`),
 		INDEX `vcard_id` (`vcard_id` ASC),
 		CONSTRAINT `vcard_id_from_vcard_ci`
 			FOREIGN KEY (`vcard_id` )
-			REFERENCES `%s` (`vcard_id`)
+			REFERENCES `%2$s` (`vcard_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION)
-		ENGINE = InnoDB;";
+		ENGINE = InnoDB;';
 
 	// first param is vevent
-	const sql_vevent = "
-		CREATE TABLE `%s` (
+	const sql_vevent = '
+		CREATE TABLE "%1$s" (
 			`vevent_id` INT unsigned NOT NULL auto_increment,
 			`DTSTART` DATE NULL,
 			`DTEND` DATE NULL,
 			`SUMMARY` VARCHAR(128) NULL,
 			`DESCRIPTION` VARCHAR(256) NULL,
 		PRIMARY KEY (`vevent_id`) )
-		ENGINE = InnoDB;";
+		ENGINE = InnoDB;';
 
 	// first param is resume
 	// second param is vcard
-	const sql_resume = "
-		CREATE TABLE `%s` (
+	const sql_resume = '
+		CREATE TABLE "%1$s" (
 			`resume_id` INT UNSIGNED NOT NULL auto_increment,
 			`vcard_id` INT unsigned NULL,
 			page_id BIGINT(20) unsigned,
@@ -129,15 +129,15 @@ class resume_ext_db_manager {
 		INDEX `vcard_id` (`vcard_id` ASC),
 		CONSTRAINT `vcard_id_from_resume`
 			FOREIGN KEY (`vcard_id` )
-			REFERENCES `%s` (`vcard_id`)
+			REFERENCES `%2$s` (`vcard_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION)
-		ENGINE = InnoDB;";
+		ENGINE = InnoDB;';
 
 	// first param is skillset
 	// second param is resume
-	const sql_skillset = "
-		CREATE TABLE `%s` (
+	const sql_skillset = '
+		CREATE TABLE "%1$s" (
 			`skillset_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			`resume_id` INT UNSIGNED NULL,
 			`name` VARCHAR(32) NULL,
@@ -145,15 +145,15 @@ class resume_ext_db_manager {
 		INDEX `resume_id` (`resume_id` ASC),
 		CONSTRAINT `resume_id_from_skillset`
 			FOREIGN KEY (`resume_id`)
-			REFERENCES `%s` (`resume_id`)
+			REFERENCES `%2$s` (`resume_id`)
 			ON DELETE CASCADE
 			ON UPDATE CASCADE)
-		ENGINE = InnoDB;";
+		ENGINE = InnoDB;';
 
 	// first param is skill
 	// second param is skillset
-	const sql_skill = "
-		CREATE TABLE `%s` (
+	const sql_skill = '
+		CREATE TABLE "%1$s" (
 			`skill_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			`skillset_id` INT UNSIGNED NULL,
 			`name` VARCHAR(32) NULL,
@@ -161,16 +161,16 @@ class resume_ext_db_manager {
 		INDEX `skillset_id` (`skillset_id` ASC),
 		CONSTRAINT `skillset_id_from_skill`
 			FOREIGN KEY (`skillset_id` )
-			REFERENCES `%s` (`skillset_id`)
+			REFERENCES `%2$s` (`skillset_id`)
 			ON DELETE CASCADE
 			ON UPDATE CASCADE)
-		ENGINE = InnoDB;";
+		ENGINE = InnoDB;';
 
 	// first param is references
 	// second param is vcard
 	// third param is resume
-	const sql_references = "
-		CREATE TABLE `%s` (
+	const sql_references = '
+		CREATE TABLE `%1$s` (
 			`vcard_vcard_id` INT UNSIGNED NOT NULL,
 			`resume_resume_id` INT UNSIGNED NOT NULL,
 		PRIMARY KEY (`vcard_vcard_id`, `resume_resume_id`),
@@ -178,21 +178,21 @@ class resume_ext_db_manager {
 		INDEX `fk_vcard_has_resume_resume` (`resume_resume_id` ASC),
 		CONSTRAINT `fk_vcard_has_resume_vcard`
 			FOREIGN KEY (`vcard_vcard_id`)
-			REFERENCES `%s` (`vcard_id`)
+			REFERENCES `%2$s` (`vcard_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION,
 		CONSTRAINT `fk_vcard_has_resume_resume`
 			FOREIGN KEY (`resume_resume_id`)
-			REFERENCES `%s` (`resume_id`)
+			REFERENCES `%3$s` (`resume_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION)
-		ENGINE = InnoDB;";
+		ENGINE = InnoDB;';
 
 	// first param is employment_history
 	// second param is resume
 	// third param is vevent
-	const sql_employment_history = "
-		CREATE TABLE `%s` (
+	const sql_employment_history = '
+		CREATE TABLE `%1$s` (
 			`employment_history_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			`resume_id` INT UNSIGNED NULL,
 			`vevent_id` INT unsigned NULL,
@@ -204,20 +204,20 @@ class resume_ext_db_manager {
 		INDEX `vevent_id` (`vevent_id` ASC),
 		CONSTRAINT `resume_id_from_eh`
 			FOREIGN KEY (`resume_id` )
-			REFERENCES `%s` (`resume_id`)
+			REFERENCES `%2$s` (`resume_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION,
 		CONSTRAINT `vevent_id_from_eh`
 			FOREIGN KEY (`vevent_id` )
-			REFERENCES `%s` (`vevent_id`)
+			REFERENCES `%3$s` (`vevent_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION)
-		ENGINE = InnoDB;";
+		ENGINE = InnoDB;';
 
 	// first param is project
 	// second param is employment history
-	const sql_projects = "
-		CREATE TABLE `%s` (
+	const sql_projects = '
+		CREATE TABLE `%1$s` (
 			`project_id` INT UNSIGNED NOT NULL auto_increment,
 			`employment_history_id` INT UNSIGNED NULL,
 			`name` VARCHAR(32) NULL,
@@ -226,16 +226,16 @@ class resume_ext_db_manager {
 		INDEX `resume_id` (`employment_history_id` ASC),
 		CONSTRAINT `resume_id_from_projects`
 			FOREIGN KEY (`employment_history_id` )
-			REFERENCES `%s` (`employment_history_id` )
+			REFERENCES `%2$s` (`employment_history_id` )
 			ON DELETE CASCADE
 			ON UPDATE CASCADE)
-		ENGINE = InnoDB;";
+		ENGINE = InnoDB;';
 
 	// first param is degree
 	// second is resume
 	// third is vevent
-	const sql_degree = "
-		CREATE TABLE `%s` (
+	const sql_degree = '
+		CREATE TABLE `%1$s` (
 			`degree_id` INT UNSIGNED NOT NULL auto_increment,
 			`resume_id` INT UNSIGNED NULL,
 			`vevent_id` INT unsigned NULL,
@@ -249,35 +249,35 @@ class resume_ext_db_manager {
 		INDEX `vevent_id` (`vevent_id` ASC),
 		CONSTRAINT `resume_id_from_degree`
 			FOREIGN KEY (`resume_id` )
-			REFERENCES `%s` (`resume_id`)
+			REFERENCES `%2$s` (`resume_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION,
 		CONSTRAINT `vevent_id_from_degree`
 			FOREIGN KEY (`vevent_id` )
-			REFERENCES `%s` (`vevent_id`)
+			REFERENCES `%3$s` (`vevent_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION)
-		ENGINE = InnoDB;";
+		ENGINE = InnoDB;';
 
 	// first param is awards
 	// second param is resume
 	// third param is vevent
-	const sql_awards = "
-		CREATE TABLE `%s` (
+	const sql_awards = '
+		CREATE TABLE `%1$s` (
 			`resume_id` INT UNSIGNED NOT NULL,
 			`vevent_id` INT unsigned NOT NULL,
 		INDEX `resume_id` (`resume_id` ASC) ,
 		PRIMARY KEY (`resume_id`, `vevent_id`),
 		INDEX `vevent_id` (`vevent_id` ASC),
 		FOREIGN KEY (`resume_id` )
-			REFERENCES `%s` (`resume_id`)
+			REFERENCES `%2$s` (`resume_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION,
 		FOREIGN KEY (`vevent_id` )
-			REFERENCES `%s` (`vevent_id`)
+			REFERENCES `%3$s` (`vevent_id`)
 			ON DELETE NO ACTION
 			ON UPDATE NO ACTION)
-		ENGINE = InnoDB;";
+		ENGINE = InnoDB;';
 	/**#@-*/
 
 	/**#@+
@@ -305,12 +305,12 @@ class resume_ext_db_manager {
 			LABEL as resume_address,
 			EMAIL as resume_email,
 			URL as resume_website
-		from %s
-		left join %s
+		from %1$s
+		left join %2$s
 			using (vcard_id)
-		left join %s
+		left join %3$s
 			using (vcard_id)
-		where resume_id = "%d"
+		where resume_id = "%4$d"
 		limit 1';
 
 	/**
